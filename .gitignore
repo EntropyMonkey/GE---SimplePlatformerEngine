@@ -15,7 +15,16 @@
 *.opensdf
 *.sdf
 *.pdb
+*.suo
 *.ilk
 *.exp
+*.tlog
+*.bi
+*.log
+*.lastbuildstate
+*.obj
+*.metagen
+*.intermediate.manifest
+
 /ipch
 /obj

@@ -10,3 +10,12 @@
 *.lai
 *.la
 *.a
+
+# VS files
+*.opensdf
+*.sdf
+*.pdb
+*.ilk
+*.exp
+/ipch
+/obj

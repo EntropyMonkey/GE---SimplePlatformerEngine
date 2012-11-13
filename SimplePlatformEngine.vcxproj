@@ -10,6 +10,20 @@
       <Platform>Win32</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Source\Game.cpp" />
+    <ClCompile Include="Source\main.cpp" />
+    <ClCompile Include="Source\Physics.cpp" />
+    <ClCompile Include="Source\PhysicsObject.cpp" />
+    <ClCompile Include="Source\Player.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Source\Game.h" />
+    <ClInclude Include="Source\GameObject.h" />
+    <ClInclude Include="Source\Physics.h" />
+    <ClInclude Include="Source\PhysicsObject.h" />
+    <ClInclude Include="Source\Player.h" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{01356E49-1741-411E-A83D-9A0E9180A896}</ProjectGuid>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
@@ -53,13 +67,13 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
-      <AdditionalIncludeDirectories>$(SDK_SDL)\include;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SDK_SDL)\include; $(SDK_SDL)\SDL_image\include;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
-      <SubSystem>Windows</SubSystem>
-      <AdditionalLibraryDirectories>$(SDK_SDL)\lib; $(SDK_SDL)\lib_dev\x86;</AdditionalLibraryDirectories>
+      <AdditionalDependencies>SDL_image.lib; %(AdditionalDependencies)</AdditionalDependencies>
+      <SubSystem>Console</SubSystem>
+      <AdditionalLibraryDirectories>$(SDK_SDL)\lib; $(SDK_SDL)\lib_dev\x86; $(SDK_SDL)\SDL_image\lib\x86;</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -73,9 +87,6 @@
       </AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClCompile Include="main.cpp" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

@@ -1,6 +1,8 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
+#include "SDL_image.h"
+
 #include "Game.h"
 #include "GameObject.h"
 

@@ -12,17 +12,29 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Game.cpp" />
+    <ClCompile Include="Source\IMessageReceiver.cpp" />
+    <ClCompile Include="Source\Log.cpp" />
     <ClCompile Include="Source\main.cpp" />
+    <ClCompile Include="Source\Messenger.cpp" />
     <ClCompile Include="Source\Physics.cpp" />
     <ClCompile Include="Source\PhysicsObject.cpp" />
     <ClCompile Include="Source\Player.cpp" />
+    <ClCompile Include="Source\SpriteHelper.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Game.h" />
     <ClInclude Include="Source\GameObject.h" />
+    <ClInclude Include="Source\IMessageReceiver.h" />
+    <ClInclude Include="Source\InputMessage.h" />
+    <ClInclude Include="Source\Log.h" />
+    <ClInclude Include="Source\LogMessage.h" />
+    <ClInclude Include="Source\Message.h" />
+    <ClInclude Include="Source\Messenger.h" />
     <ClInclude Include="Source\Physics.h" />
     <ClInclude Include="Source\PhysicsObject.h" />
     <ClInclude Include="Source\Player.h" />
+    <ClInclude Include="Source\sdl_image\SDL_image.h" />
+    <ClInclude Include="Source\SpriteHelper.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{01356E49-1741-411E-A83D-9A0E9180A896}</ProjectGuid>
@@ -67,13 +79,13 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
-      <AdditionalIncludeDirectories>$(SDK_SDL)\include; $(SDK_SDL)\SDL_image\include;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SDK_SDL)\include;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>SDL_image.lib; %(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Console</SubSystem>
-      <AdditionalLibraryDirectories>$(SDK_SDL)\lib; $(SDK_SDL)\lib_dev\x86; $(SDK_SDL)\SDL_image\lib\x86;</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SDK_SDL)\lib; $(SDK_SDL)\lib_dev\x86; </AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">

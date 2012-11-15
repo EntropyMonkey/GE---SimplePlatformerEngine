@@ -3,11 +3,16 @@
 
 #include "SDL.h"
 #include <list>
+#include <queue>
 #include "Time.h"
 
 #include "GameObject.h"
 #include "Physics.h"
 #include "Player.h"
+#include "IMessageReceiver.h"
+#include "Messenger.h"
+#include "Log.h"
+#include "InputMessage.h"
 
 #define DEBUG_TIME TRUE
 
@@ -44,6 +49,10 @@ namespace SPE
 		float					lastUpdateTime;
 
 		std::list<GameObject *> gameObjects;
+
+		Log*					log;
+
+		Messenger*				messenger;
 
 		Physics*				physics;
 

@@ -35,6 +35,12 @@ void Game::Init()
         exit(1);
     }
 
+	// initialize messenger
+	messenger = new Messenger();
+
+	// initialize log
+	log = new Log(messenger);
+
 	// initialize physics
 	physics = new Physics();
 	physics->Start();
@@ -43,12 +49,33 @@ void Game::Init()
 	timeScale = 1;
 
 	// initialize player
-	player = new Player(this);
+	player = new Player(this, messenger);
+
+	messenger->SendMessage(LogMessage("Game Started.\n"));
 }
 
 // ------------------------------------------------------------- LOOP LOGIC
 void Game::Play()
 {
+	SDL_Event sdlEvent = SDL_Event();
+	while (SDL_PollEvent(&sdlEvent))
+	{
+		// user closes window
+		if (sdlEvent.type == SDL_QUIT)
+		{
+			quit = true;
+			break;
+		}
+		else if (sdlEvent.type == SDL_KEYDOWN)
+		{
+			messenger->SendMessage(InputMessage(InputAction::KEY_DOWN, sdlEvent.key.keysym.sym));
+		}
+		else if (sdlEvent.type == SDL_KEYUP)
+		{
+			messenger->SendMessage(InputMessage(InputAction::KEY_UP, sdlEvent.key.keysym.sym));
+		}
+	}
+
 	int now = clock();
 	deltaTime = (float)((now - lastUpdateTime) / CLOCKS_PER_SEC) / timeScale;
 	lastUpdateTime = now;
@@ -95,15 +122,18 @@ void Game::Render()
 	SDL_Flip(screen);
 }
 
+// ------------------------------------------------------------------- QUIT
 void Game::Quit()
 {
 	quit = true;
-
-	delete player;
 }
 
 Game::~Game()
 {
+	delete messenger;
+	delete physics;
+	delete player;
+
     SDL_Quit();
 }
 

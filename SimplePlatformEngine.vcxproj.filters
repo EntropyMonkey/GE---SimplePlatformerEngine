@@ -13,6 +13,12 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Headerdateien\SDL_image">
+      <UniqueIdentifier>{78fc207a-a2a2-4db4-a98f-504dea0fa5c2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headerdateien\Messaging">
+      <UniqueIdentifier>{feb1c4e8-0713-45f7-b70c-3d623355bcde}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Game.cpp">
@@ -30,22 +36,58 @@
     <ClCompile Include="Source\Player.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="Source\SpriteHelper.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Messenger.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\IMessageReceiver.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Log.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\sdl_image\SDL_image.h">
+      <Filter>Headerdateien\SDL_image</Filter>
+    </ClInclude>
     <ClInclude Include="Source\Game.h">
-      <Filter>Quelldateien</Filter>
+      <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="Source\Physics.h">
-      <Filter>Quelldateien</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\GameObject.h">
-      <Filter>Quelldateien</Filter>
+      <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="Source\PhysicsObject.h">
-      <Filter>Quelldateien</Filter>
+      <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="Source\Player.h">
-      <Filter>Quelldateien</Filter>
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\GameObject.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\SpriteHelper.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Messenger.h">
+      <Filter>Headerdateien\Messaging</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Message.h">
+      <Filter>Headerdateien\Messaging</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\IMessageReceiver.h">
+      <Filter>Headerdateien\Messaging</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Log.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\LogMessage.h">
+      <Filter>Headerdateien\Messaging</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\InputMessage.h">
+      <Filter>Headerdateien\Messaging</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

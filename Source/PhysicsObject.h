@@ -29,8 +29,8 @@ namespace SPE
 		glm::vec2				lastVelocity;
 		glm::vec2				acceleration;
 
-		float					orientation; // current angle around the z-axis in degrees
-		float					angularVelocity;
+		//float					orientation; // current angle around the z-axis in degrees
+		//float					angularVelocity;
 
 		float					lastDeltaTime;
 

@@ -6,6 +6,7 @@
 namespace SPE
 {
 	class IMessageReceiver;
+	class Messenger;
 
 	public class Message
 	{

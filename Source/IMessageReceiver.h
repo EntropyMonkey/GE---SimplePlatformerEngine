@@ -13,7 +13,7 @@ namespace SPE
 	public class IMessageReceiver
 	{
 	public:
-		IMessageReceiver(Messenger *messenger);
+		IMessageReceiver(Messenger *messenger, bool registerInstantly = true);
 
 		virtual ~IMessageReceiver() {}
 

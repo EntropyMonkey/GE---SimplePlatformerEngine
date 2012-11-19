@@ -1,6 +1,7 @@
 #ifndef MESSENGER_H
 #define MESSENGER_H
 
+#include <glm/glm.hpp>
 #include <list>
 
 #include "Message.h"
@@ -9,6 +10,7 @@
 namespace SPE
 {
 	class IMessageReceiver;
+	class Message;
 
 	public class Messenger
 	{

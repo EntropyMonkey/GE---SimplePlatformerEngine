@@ -48,6 +48,15 @@
     <ClCompile Include="Source\Log.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="Source\CirclePO.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\RectanglePO.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Floor.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\sdl_image\SDL_image.h">
@@ -88,6 +97,21 @@
     </ClInclude>
     <ClInclude Include="Source\InputMessage.h">
       <Filter>Headerdateien\Messaging</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\CirclePO.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\CollisionMessage.h">
+      <Filter>Headerdateien\Messaging</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\RectanglePO.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Camera.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Floor.h">
+      <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

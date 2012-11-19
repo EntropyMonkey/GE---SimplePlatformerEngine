@@ -3,7 +3,8 @@
 using namespace SPE;
 using namespace std;
 
-Game::Game()
+Game::Game() :
+	IMessageReceiver(messenger, false)
 {
     Init();
 
@@ -27,29 +28,52 @@ void Game::Init()
 
     atexit(SDL_Quit);
 
-    screen = SDL_SetVideoMode(640, 480, 32, SDL_SWSURFACE);
+	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+
+    screen = SDL_SetVideoMode(SCREEN_WIDTH, SCREEN_HEIGHT, 
+		SCREEN_COLORDEPTH, SDL_SWSURFACE | SDL_OPENGL);
 
     if (screen == NULL) 
 	{
         printf("Can't set video mode: %s\n", SDL_GetError());
         exit(1);
     }
+	
+	// set gl matrices
+	glEnable(GL_TEXTURE_2D);
+ 
+	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+ 
+	glViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+ 
+	glClear(GL_COLOR_BUFFER_BIT);
+ 
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+ 
+	glOrtho(0.0f, SCREEN_WIDTH, SCREEN_HEIGHT, 0.0f, -1.0f, 1.0f);
+ 
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
 
 	// initialize messenger
 	messenger = new Messenger();
+	messenger->Register(this);
 
 	// initialize log
 	log = new Log(messenger);
 
 	// initialize physics
-	physics = new Physics();
+	physics = new Physics(messenger);
 	physics->Start();
 
 	// initialize timescale
 	timeScale = 1;
 
-	// initialize player
-	player = new Player(this, messenger);
+	// initialize objects
+	player1 = new Player(this, messenger);
+
+	floor = new Floor(this, messenger);
 
 	messenger->SendMessage(LogMessage("Game Started.\n"));
 }
@@ -68,11 +92,11 @@ void Game::Play()
 		}
 		else if (sdlEvent.type == SDL_KEYDOWN)
 		{
-			messenger->SendMessage(InputMessage(InputAction::KEY_DOWN, sdlEvent.key.keysym.sym));
+			messenger->SendMessage(InputMessage(InputMessage::KEY_DOWN, sdlEvent.key.keysym.sym));
 		}
 		else if (sdlEvent.type == SDL_KEYUP)
 		{
-			messenger->SendMessage(InputMessage(InputAction::KEY_UP, sdlEvent.key.keysym.sym));
+			messenger->SendMessage(InputMessage(InputMessage::KEY_UP, sdlEvent.key.keysym.sym));
 		}
 	}
 
@@ -91,14 +115,26 @@ void Game::Play()
 	Render();
 }
 
+// ------------------------------------------------------- Receive Messages
+void Game::Receive(Message *message)
+{
+	InputMessage *msg = dynamic_cast<InputMessage*>(message);
+	if (msg)
+		Receive(msg);
+}
+
+void Game::Receive(InputMessage *message)
+{
+	if (message->action == InputMessage::KEY_UP)
+	{
+		if (message->key == SDLKey::SDLK_SPACE)
+			Reset();
+	}
+}
+
 // ----------------------------------------------------------------- UPDATE
 void Game::Update(float deltaTime)
 {
-#if DEBUG_TIME
-	std::cout.setf(std::ios_base::fixed, std::ios_base::floatfield);
-	std::cout.precision(5);
-	std::cout << deltaTime << std::endl;
-#endif
 	UpdateGameObjects(deltaTime);
 }
 
@@ -118,8 +154,20 @@ void Game::UpdateGameObjects(float deltaTime)
 // ----------------------------------------------------------------- RENDER
 void Game::Render()
 {
-	player->Render();
-	SDL_Flip(screen);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH);
+
+	// render objects
+	floor->Render();
+	player1->Render();
+
+	SDL_GL_SwapBuffers();
+	//SDL_Flip(screen);
+}
+
+// ------------------------------------------------------------------ RESET
+void Game::Reset()
+{
+	player1->position = glm::vec2(300, 0);
 }
 
 // ------------------------------------------------------------------- QUIT
@@ -132,9 +180,16 @@ Game::~Game()
 {
 	delete messenger;
 	delete physics;
-	delete player;
+	delete player1;
+	delete floor;
 
     SDL_Quit();
+}
+
+// --------------------------------------------- PhysicsObject registration
+void Game::Add(PhysicsObject *physicsObject)
+{
+	physics->Add(physicsObject);
 }
 
 // ------------------------------------------------ GameObject registration

@@ -4,10 +4,12 @@ using namespace SPE;
 
 unsigned int PhysicsObject::nextFreeId = 0;
 
-PhysicsObject::PhysicsObject() : id(++nextFreeId)
+PhysicsObject::PhysicsObject() : 
+	id(++nextFreeId)
 {
+
 	currentForce = position = velocity = lastVelocity = acceleration = glm::vec2(0,0);
-	orientation = angularVelocity = 0;
+	//orientation = angularVelocity = 0;
 	mass = 1;
 	coeffOfRestitution = 1.0f;
 	coeffOfFriction = 0.9f;
@@ -29,7 +31,7 @@ void PhysicsObject::Integrate(float deltaTime)
 
 	// integrate angular acceleration and velocity
 	//TODO acceleration
-	orientation += angularVelocity * deltaTime;
+	//orientation += angularVelocity * deltaTime;
 
 	// set stuff for next frame
 

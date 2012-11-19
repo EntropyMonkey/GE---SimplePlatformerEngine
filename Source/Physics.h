@@ -4,6 +4,8 @@
 #include <set>
 
 #include "PhysicsObject.h"
+#include "Messenger.h"
+#include "CollisionMessage.h"
 
 namespace SPE
 {
@@ -14,7 +16,7 @@ namespace SPE
 	public class Physics
 	{
 	public:
-								Physics();
+								Physics(Messenger* _messenger);
 								~Physics();
 
 		void					Add(PhysicsObject *object);
@@ -28,6 +30,7 @@ namespace SPE
 	protected:
 		std::set<PhysicsObject *> *physicsObjects;
 		bool					started;
+		Messenger *				messenger;
 	};
 };
 

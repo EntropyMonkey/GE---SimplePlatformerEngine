@@ -3,7 +3,8 @@
 using namespace SPE;
 using namespace std;
 
-Physics::Physics()
+Physics::Physics(Messenger *_messenger) :
+	messenger(_messenger)
 {
 	physicsObjects = new set<PhysicsObject*>();
 	started = false;
@@ -60,7 +61,10 @@ void Physics::Update(float deltaTime)
 		// collide objects above the matrix's diagonal
 		for (; j < numPhysicsObjects; j++)
 		{
-			(*it1)->TestCollision(*it2);
+			if ((*it1)->TestCollision(*it2))
+			{
+				messenger->SendMessage(CollisionMessage(*it1, *it2));
+			}
 			it2++;
 		}
 

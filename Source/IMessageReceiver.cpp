@@ -2,7 +2,8 @@
 
 using namespace SPE;
 
-IMessageReceiver::IMessageReceiver(Messenger *messenger)
+IMessageReceiver::IMessageReceiver(Messenger *messenger, bool registerInstantly)
 {
-	messenger->Register(this);
+	if (registerInstantly)
+		messenger->Register(this);
 }

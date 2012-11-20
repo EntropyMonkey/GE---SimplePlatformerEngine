@@ -48,6 +48,7 @@ namespace SPE
 		virtual Shape			GetShape() = 0;
 
 	protected:
+		bool					useGravity;
 		glm::vec2				currentForce;
 		PhysicsObject*			collisionObject;
 		PhysicsObject*			lastCollisionObject;

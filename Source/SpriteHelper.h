@@ -20,11 +20,6 @@ namespace SPE
 	public class SpriteHelper
 	{
 	public:
-		static void CalcTexCoords(float *spriteRects, 
-			unsigned int spriteNum, unsigned int spriteSize,
-			unsigned int spriteSheetSize,
-			unsigned int spritesPerRow);
-
 		static void LoadTexture(char *file, GLuint &texture);
 	};
 };

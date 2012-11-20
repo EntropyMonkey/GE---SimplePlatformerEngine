@@ -31,7 +31,7 @@ void Game::Init()
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
     screen = SDL_SetVideoMode(SCREEN_WIDTH, SCREEN_HEIGHT, 
-		SCREEN_COLORDEPTH, SDL_SWSURFACE | SDL_OPENGL);
+		SCREEN_COLORDEPTH, SDL_HWSURFACE | SDL_DOUBLEBUF | SDL_OPENGL);
 
     if (screen == NULL) 
 	{
@@ -41,6 +41,9 @@ void Game::Init()
 	
 	// set gl matrices
 	glEnable(GL_TEXTURE_2D);
+	glEnable(GL_BLEND);
+
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
  
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
  
@@ -128,7 +131,10 @@ void Game::Receive(InputMessage *message)
 	if (message->action == InputMessage::KEY_UP)
 	{
 		if (message->key == SDLKey::SDLK_SPACE)
+		{
 			Reset();
+			SDL_GL_SwapBuffers();
+		}
 	}
 }
 

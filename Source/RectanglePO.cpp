@@ -3,9 +3,8 @@
 using namespace SPE;
 using namespace glm;
 
-RectanglePO::RectanglePO(/*Game *_game) : game(_game*/)
+RectanglePO::RectanglePO()
 {
-	//game->Add((PhysicsObject*)this);
 }
 
 void RectanglePO::Update(float deltaTime)

@@ -29,7 +29,7 @@ namespace SPE
 	private:
 		Game*					game;
 
-		SDL_Surface*			sprite;
+		GLuint					sprite;
 		int						height;
 	};
 };

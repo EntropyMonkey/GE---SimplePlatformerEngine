@@ -14,45 +14,30 @@ Player::Player(Game* _game, Messenger *_messenger) :
 
 	// set texture coords
 	spriteRects = new float[spriteNum * 4]();
-	// first row
-	spriteRects[0 * 4 + X] = 0;
-	spriteRects[0 * 4 + Y] = 0;
-	spriteRects[0 * 4 + W] = 0.25;
-	spriteRects[0 * 4 + H] = 0.25;
 
-	spriteRects[1 * 4 + X] = 0.25;
-	spriteRects[1 * 4 + Y] = 0;
-	spriteRects[1 * 4 + W] = 0.5;
-	spriteRects[1 * 4 + H] = 0.25;
+	float pixSize = 256.0f;
+	int spritesPerRow = 3;
+	vec2 size = vec2((float)spriteSize / pixSize, (float)spriteSize / pixSize);
 
-	spriteRects[2 * 4 + X] = 0.5;
-	spriteRects[2 * 4 + Y] = 0;
-	spriteRects[2 * 4 + W] = 0.75;
-	spriteRects[2 * 4 + H] = 0.25;
-	
-	// second row
-	spriteRects[3 * 4 + X] = 0;
-	spriteRects[3 * 4 + Y] = 0.25;
-	spriteRects[3 * 4 + W] = 0.25;
-	spriteRects[3 * 4 + H] = 0.5;
-	
-	spriteRects[4 * 4 + X] = 0.25;
-	spriteRects[4 * 4 + Y] = 0.25;
-	spriteRects[4 * 4 + W] = 0.5;
-	spriteRects[4 * 4 + H] = 0.5;
-	
-	spriteRects[5 * 4 + X] = 0.5;
-	spriteRects[5 * 4 + Y] = 0.25;
-	spriteRects[5 * 4 + W] = 0.75;
-	spriteRects[5 * 4 + H] = 0.5;
+	int x = 0; int y = 0;
+	for (int i = 0; i < 7; i++)
+	{
+		spriteRects[i * 4 + X] = x * size.x;
+		spriteRects[i * 4 + Y] = y * size.y;
+		spriteRects[i * 4 + W] = spriteRects[i * 4 + X] + size.x;
+		spriteRects[i * 4 + H] = spriteRects[i * 4 + Y] + size.y;
 
-	// third row
-	spriteRects[6 * 4 + X] = 0;
-	spriteRects[6 * 4 + Y] = 0.5;
-	spriteRects[6 * 4 + W] = 0.25;
-	spriteRects[6 * 4 + H] = 0.75;
+		x++;
+		if (x >= spritesPerRow)
+		{
+			x = 0;
+			y++;
+		}
+	}
 
+	// set physics stuff
 	position = vec2(300, 0);
+	radius = 2.0;
 
 	// not doing this in the GameObject and PhysicsObject constructors
 	// because of circular reference trouble
@@ -67,11 +52,11 @@ Player::~Player()
 
 void Player::Update(float deltaTime)
 {
-	AddForce(vec2(0, 9.81f));
 }
 
 void Player::Render()
 {
+	glEnable(GL_BLEND);
 	glBindTexture(GL_TEXTURE_2D, sprites);
 
 	glPushMatrix();
@@ -108,7 +93,7 @@ void Player::Receive(Message *message)
 
 void Player::Receive(InputMessage *message)
 {
-	std::cout << message->key << std::endl;
+	std::cout << (char)message->key << std::endl;
 }
 
 void Player::Receive(CollisionMessage *message)

@@ -10,10 +10,13 @@ Floor::Floor(Game *_game, Messenger *_messenger) :
 	game->Add((GameObject*) this);
 	game->Add((PhysicsObject*) this);
 
-	sprite = IMG_Load("Images/sprites/floor.png");
+	SpriteHelper::LoadTexture("Images/sprites/floor.png", sprite);
 
-	height = 100;
-	position = vec2(0, SCREEN_HEIGHT - height);
+	position = vec2(300, 300);
+	SetSize(vec2(100, 100));
+
+	useGravity = false;
+	mass = 0;
 }
 
 void Floor::Update(float deltaTime)
@@ -23,12 +26,31 @@ void Floor::Update(float deltaTime)
 
 void Floor::Render()
 {
-	/*SDL_Rect r = SDL_Rect();
-	r.x = position.x;
-	r.y = position.y;
-	r.w = SCREEN_WIDTH;
-	r.h = height;
-	SDL_BlitSurface(sprite, NULL, game->screen, &r);*/
+	glBindTexture(GL_TEXTURE_2D, sprite);
+
+	glPushMatrix();
+	glTranslatef(position.x, position.y, 0);
+
+	int i = 6 * 4;
+	glBegin(GL_QUADS);
+		// bottom left
+		glTexCoord2f (0, 0);
+		glVertex3f (0.0, 0.0, 0.0);
+
+		// bottom right
+		glTexCoord2f (1.0, 0.0);
+		glVertex3f (size.x, 0.0, 0.0);
+
+		// upper right
+		glTexCoord2f (1.0, 1.0);
+		glVertex3f (size.x, size.y, 0.0);
+		
+		// upper left
+		glTexCoord2f (0.0, 1.0);
+		glVertex3f (0.0, size.y, 0.0);
+	glEnd();
+
+	glPopMatrix();
 }
 
 void Floor::Receive(Message *message)

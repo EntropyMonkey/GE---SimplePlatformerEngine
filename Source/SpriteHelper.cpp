@@ -2,50 +2,6 @@
 
 using namespace SPE;
 
-void SpriteHelper::CalcTexCoords(float* spriteRects, 
-	unsigned int spriteNum, unsigned int spriteSize = 64, 
-	unsigned int spriteSheetSize = 256, 
-	unsigned int spritesPerRow = 3)
-{
-	float normalizedSpriteSize = (float)spriteSize / spriteSheetSize;
-	int i = 0;
-	for (int y = 0; y <= spriteNum / spritesPerRow; y++)
-	{
-		for (int x = 0; x < spritesPerRow; x++)
-		{
-			std::cout << std::endl << (spriteRects[i + X] = x * normalizedSpriteSize);
-			std::cout << std::endl << (spriteRects[i + Y] = y * normalizedSpriteSize);
-			std::cout << std::endl << (spriteRects[i + W] = spriteRects[i * 4 + X] + normalizedSpriteSize);
-			std::cout << std::endl << (spriteRects[i + H] = spriteRects[i * 4 + Y] + normalizedSpriteSize);
-			
-			//printf("x: %f y: %f w: %f h: %f\n", spriteRects[i + X], spriteRects[i + Y], spriteRects[i + W], spriteRects[i + H]);
-			i += 4;
-		}
-		std::cout << "--\n";
-	}
-
-	/*int x, y, i = 0;
-	for (; y < spritesPerRow * spriteSize; y += spriteSize)
-	{
-		x = 0;
-		for (; x < spritesPerRow * spriteSize; x += spriteSize, i++)
-		{
-			spriteRects[i * 4 + X] = (float)x / (float)spriteSheetSize;
-			spriteRects[i * 4 + Y] = (float)y / (float)spriteSheetSize;
-			spriteRects[i * 4 + W] = (float)x / spriteSheetSize + (float)spriteSize / (float)spriteSheetSize;
-			spriteRects[i * 4 + H] = (float)y / spriteSheetSize + (float)spriteSize / (float)spriteSheetSize;
-
-			printf("x: %f y: %f w: %f h: %f\n", spriteRects[i + X], spriteRects[i + Y], spriteRects[i + W], spriteRects[i + H]);
-
-			if (i >= spriteNum)
-				break;
-		}
-
-		if (i >= spriteNum)
-			break;
-	}*/
-}
-
 void SpriteHelper::LoadTexture(char *file, GLuint &texture)
 {
 	SDL_Surface *surface = IMG_Load(file);

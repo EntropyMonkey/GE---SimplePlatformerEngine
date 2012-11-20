@@ -4,7 +4,7 @@
 #include <glm/glm.hpp>
 
 #include "PhysicsObject.h"
-//#include "RectanglePO.h"
+#include "RectanglePO.h"
 
 namespace SPE
 {
@@ -12,7 +12,7 @@ namespace SPE
 	public class CirclePO : public PhysicsObject
 	{
 	public:
-
+			
 		bool				TestCollision(PhysicsObject* other);
 		Shape				GetShape();
 	};

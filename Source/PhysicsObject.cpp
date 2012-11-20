@@ -15,6 +15,8 @@ PhysicsObject::PhysicsObject() :
 	coeffOfFriction = 0.9f;
 	lastDeltaTime = 0;
 	lastCollisionObject = collisionObject = NULL;
+
+	useGravity = true;
 }
 
 PhysicsObject::~PhysicsObject()
@@ -24,6 +26,9 @@ PhysicsObject::~PhysicsObject()
 
 void PhysicsObject::Integrate(float deltaTime)
 {
+	if (useGravity)
+		AddForce(glm::vec2(0, 9.81f) * mass);
+
 	// integrate acceleration and velocity
 	acceleration = currentForce / (mass == 0 ? 1000000 : mass);
 	velocity += acceleration * deltaTime;

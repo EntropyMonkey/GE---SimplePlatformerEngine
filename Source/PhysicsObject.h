@@ -17,6 +17,8 @@ namespace SPE
 
 		// starts at 1
 		const unsigned int		id;
+		
+		bool					physicsActive;
 
 		float					radius;
 

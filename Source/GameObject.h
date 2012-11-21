@@ -9,7 +9,7 @@ namespace SPE
 		bool					update;
 		bool					render;
 
-		void 					Active(bool _update = false, bool _render = false)
+		virtual void 			Active(bool _update = true, bool _render = true)
 		{
 			update = _update;
 			render = _render;

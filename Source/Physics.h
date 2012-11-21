@@ -11,7 +11,7 @@ namespace SPE
 {
 	class PhysicsObject; // forward declaration
 
-	const float GRAVITY = -9.81f;
+	const float GRAVITY = 15.0f;
 
 	public class Physics
 	{

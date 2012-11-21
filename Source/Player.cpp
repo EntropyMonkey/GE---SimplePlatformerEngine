@@ -7,7 +7,8 @@ Player::Player(Game* _game, Messenger *_messenger) :
 	IMessageReceiver(_messenger),
 	game(_game),
 	spriteNum(7),
-	spriteSize(64)
+	spriteSize(64),
+	flowTime(2)
 {
 	// load textures
 	SpriteHelper::LoadTexture("Images/sprites/bomb.png", sprites);
@@ -36,8 +37,16 @@ Player::Player(Game* _game, Messenger *_messenger) :
 	}
 
 	// set physics stuff
-	position = vec2(300, 0);
+	position = vec2(0, 0);
 	radius = 2.0;
+	mass = 1;
+
+	// flow state
+	flowing = false;
+	flowSpeed = 100;
+	flowDirection = vec2(0, 0);
+	flowTimer = 0;
+	maxVelocity = 100;
 
 	// not doing this in the GameObject and PhysicsObject constructors
 	// because of circular reference trouble
@@ -48,10 +57,38 @@ Player::Player(Game* _game, Messenger *_messenger) :
 Player::~Player()
 {
 	glDeleteTextures(1, &sprites);
+	game->Remove((GameObject*)this);
+	game->Remove((PhysicsObject*)this);
+}
+
+void Player::Active(bool _update, bool _render)
+{
+	physicsActive = _update;
+	update = _update;
+	render = _render;
 }
 
 void Player::Update(float deltaTime)
 {
+	if (flowing)
+	{
+		flowTimer -= deltaTime;
+		if (flowTimer > 0)
+		{
+			AddForce(flowDirection * flowSpeed);
+		
+			float velSqrMagnitude = velocity.x * velocity.x + velocity.y * velocity.y;
+			if (velSqrMagnitude > maxVelocity * maxVelocity)
+			{
+				velocity /= sqrt(velSqrMagnitude);
+				velocity *= maxVelocity;
+			}
+		}
+		else
+		{
+			flowing = false;
+		}
+	}
 }
 
 void Player::Render()
@@ -84,6 +121,16 @@ void Player::Render()
 	glPopMatrix();
 }
 
+void Player::Shoot(glm::vec2 direction)
+{
+	// normalize direction just in case
+	flowDirection = direction / 
+		sqrt(direction.x * direction.x + direction.y * direction.y);
+
+	flowTimer = flowTime;
+	flowing = true;
+}
+
 void Player::Receive(Message *message)
 {
 	InputMessage *msg = dynamic_cast<InputMessage*>(message);
@@ -93,7 +140,6 @@ void Player::Receive(Message *message)
 
 void Player::Receive(InputMessage *message)
 {
-	std::cout << (char)message->key << std::endl;
 }
 
 void Player::Receive(CollisionMessage *message)

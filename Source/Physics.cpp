@@ -61,7 +61,8 @@ void Physics::Update(float deltaTime)
 		// collide objects above the matrix's diagonal
 		for (; j < numPhysicsObjects; j++)
 		{
-			if ((*it1)->TestCollision(*it2))
+			if (((*it1)->physicsActive && (*it2)->physicsActive) && 
+				(*it1)->TestCollision(*it2))
 			{
 				messenger->SendMessage(CollisionMessage(*it1, *it2));
 			}
@@ -69,7 +70,8 @@ void Physics::Update(float deltaTime)
 		}
 
 		// update the physics of this object
-		(*it1)->Integrate(deltaTime);
+		if ((*it1)->physicsActive)
+			(*it1)->Integrate(deltaTime);
 
 		it1++;
 	}

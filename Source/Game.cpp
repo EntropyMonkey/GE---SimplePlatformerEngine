@@ -2,6 +2,7 @@
 
 using namespace SPE;
 using namespace std;
+using namespace glm;
 
 Game::Game() :
 	IMessageReceiver(messenger, false)
@@ -47,6 +48,7 @@ void Game::Init()
  
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
  
+	//glViewport(SCREEN_WIDTH / 5, SCREEN_HEIGHT / 5, SCREEN_WIDTH / 10, SCREEN_HEIGHT / 10);
 	glViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
  
 	glClear(GL_COLOR_BUFFER_BIT);
@@ -74,9 +76,12 @@ void Game::Init()
 	timeScale = 1;
 
 	// initialize objects
-	player1 = new Player(this, messenger);
-
+	currentBomb = new Player(this, messenger);
+	currentBomb->Active(false, false);
+	
 	floor = new Floor(this, messenger);
+
+	dragon = new Dragon(this, messenger);
 
 	messenger->SendMessage(LogMessage("Game Started.\n"));
 }
@@ -141,6 +146,9 @@ void Game::Receive(InputMessage *message)
 // ----------------------------------------------------------------- UPDATE
 void Game::Update(float deltaTime)
 {
+	floor->textureMovementSpeed = currentBomb->velocity.x;
+	floor->position.x = currentBomb->position.x - 500.0f;
+
 	UpdateGameObjects(deltaTime);
 }
 
@@ -162,18 +170,38 @@ void Game::Render()
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH);
 
-	// render objects
-	floor->Render();
-	player1->Render();
+	glPushMatrix();
+	glTranslatef(-currentBomb->position.x, 0, 0);
+		// render objects
+		floor->Render();
+		dragon->Render();
+	
+		currentBomb->Render();
+	glPopMatrix();
 
 	SDL_GL_SwapBuffers();
 	//SDL_Flip(screen);
 }
 
+// ------------------------------------------------------------------ SHOOT
+void Game::Shoot(float angle)
+{
+	currentBomb->position = vec2(
+		dragon->position.x + dragon->size.x * 0.45f,
+		dragon->position.y + dragon->size.x * 0.35f);
+	currentBomb->velocity = vec2(0, 0);
+	
+	// take angle and shootspeed(radius of 1) as polar coordinates and convert them to
+	// cartesian coords
+	vec2 direction = vec2(cos(angle * DEG2RAD), sin(angle * DEG2RAD));
+
+	currentBomb->Active(true, true);
+	currentBomb->Shoot(direction);
+}
+
 // ------------------------------------------------------------------ RESET
 void Game::Reset()
 {
-	player1->position = glm::vec2(300, 0);
 }
 
 // ------------------------------------------------------------------- QUIT
@@ -184,10 +212,13 @@ void Game::Quit()
 
 Game::~Game()
 {
+	if (currentBomb)
+		delete currentBomb;
+	delete floor;
+	delete dragon;
+	
 	delete messenger;
 	delete physics;
-	delete player1;
-	delete floor;
 
     SDL_Quit();
 }
@@ -196,6 +227,11 @@ Game::~Game()
 void Game::Add(PhysicsObject *physicsObject)
 {
 	physics->Add(physicsObject);
+}
+
+void Game::Remove(PhysicsObject *physicsObject)
+{
+	physics->Remove(physicsObject);
 }
 
 // ------------------------------------------------ GameObject registration

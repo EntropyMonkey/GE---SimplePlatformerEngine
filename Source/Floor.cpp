@@ -12,16 +12,26 @@ Floor::Floor(Game *_game, Messenger *_messenger) :
 
 	SpriteHelper::LoadTexture("Images/sprites/floor.png", sprite);
 
-	position = vec2(300, 300);
-	SetSize(vec2(100, 100));
+	position = vec2(0, 400);
+	SetSize(vec2(10000, 100));
 
 	useGravity = false;
 	mass = 0;
+	textureOffset = 0;
+	textureMovementSpeed = 0;
+}
+
+Floor::~Floor()
+{
+	glDeleteTextures(1, &sprite);
+
+	game->Remove((GameObject*)this);
+	game->Remove((PhysicsObject*)this);
 }
 
 void Floor::Update(float deltaTime)
 {
-
+	textureOffset += deltaTime * 0.005f * textureMovementSpeed;
 }
 
 void Floor::Render()
@@ -32,21 +42,22 @@ void Floor::Render()
 	glTranslatef(position.x, position.y, 0);
 
 	int i = 6 * 4;
+	float stretch = 100.0f;
 	glBegin(GL_QUADS);
 		// bottom left
-		glTexCoord2f (0, 0);
+		glTexCoord2f (0 + textureOffset, 0);
 		glVertex3f (0.0, 0.0, 0.0);
 
 		// bottom right
-		glTexCoord2f (1.0, 0.0);
+		glTexCoord2f (1.0 * stretch + textureOffset, 0.0);
 		glVertex3f (size.x, 0.0, 0.0);
 
 		// upper right
-		glTexCoord2f (1.0, 1.0);
+		glTexCoord2f (1.0 * stretch + textureOffset, 1.0);
 		glVertex3f (size.x, size.y, 0.0);
 		
 		// upper left
-		glTexCoord2f (0.0, 1.0);
+		glTexCoord2f (0.0 + textureOffset, 1.0);
 		glVertex3f (0.0, size.y, 0.0);
 	glEnd();
 

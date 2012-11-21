@@ -17,6 +17,7 @@ PhysicsObject::PhysicsObject() :
 	lastCollisionObject = collisionObject = NULL;
 
 	useGravity = true;
+	physicsActive = true;
 }
 
 PhysicsObject::~PhysicsObject()
@@ -27,17 +28,19 @@ PhysicsObject::~PhysicsObject()
 void PhysicsObject::Integrate(float deltaTime)
 {
 	if (useGravity)
-		AddForce(glm::vec2(0, 9.81f) * mass);
+		AddForce(glm::vec2(0, GRAVITY) * mass);
 
-	// integrate acceleration and velocity
-	acceleration = currentForce / (mass == 0 ? 1000000 : mass);
-	velocity += acceleration * deltaTime;
-	position += velocity * deltaTime;
+	if (mass != 0)
+	{
+		// integrate acceleration and velocity
+		acceleration = currentForce / mass;
+		velocity += acceleration * deltaTime;
+		position += velocity * deltaTime;
 
-	// integrate angular acceleration and velocity
-	//TODO acceleration
-	//orientation += angularVelocity * deltaTime;
-
+		// integrate angular acceleration and velocity
+		//TODO acceleration
+		//orientation += angularVelocity * deltaTime;
+	}
 	// set stuff for next frame
 
 	// store velocity
@@ -85,7 +88,7 @@ void PhysicsObject::Collide(PhysicsObject* other, glm::vec2 normal)
 			float friction = 0;
 			friction = (this->coeffOfFriction + collisionObject->coeffOfFriction) * 0.5f;
 			AddForce(-glm::normalize(lastVelocity) * friction);
-			AddForce(glm::vec2(0, -GRAVITY));
+			//AddForce(glm::vec2(0, -GRAVITY));
 		}
 
 		// calculate shared bounciness

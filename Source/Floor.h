@@ -18,7 +18,10 @@ namespace SPE
 	public class Floor : public RectanglePO, public GameObject, public IMessageReceiver
 	{
 	public:
+		float					textureMovementSpeed;
+
 								Floor(Game *_game, Messenger *_messenger);
+		virtual					~Floor();
 
 		void					Render();
 		void					Update(float deltaTime);
@@ -30,7 +33,7 @@ namespace SPE
 		Game*					game;
 
 		GLuint					sprite;
-		int						height;
+		float					textureOffset; // used for emulating movement
 	};
 };
 

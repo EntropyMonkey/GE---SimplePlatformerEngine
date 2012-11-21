@@ -43,7 +43,7 @@ namespace SPE
 	public class Game : public IMessageReceiver
 	{
 	public:
-		SDL_Surface*			screen;
+		bool					aiming; // if player is loading the dragon
 
 		Game();
 		~Game();

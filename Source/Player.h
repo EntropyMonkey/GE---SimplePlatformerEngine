@@ -43,13 +43,19 @@ namespace SPE
 		const unsigned int		spriteNum;
 		const unsigned int		spriteSize;
 
-		bool					flowing;
-		float					flowSpeed;
-		glm::vec2				flowDirection;
-		const float				flowTime;
-		float					flowTimer;
+		bool					startFlying;
+		float					flySpeed;
+		glm::vec2				flyDirection;
+		const float				flyTime;
+		float					flyStartTimer;
 
 		float					maxVelocity;
+
+		bool					getBigger;
+		bool					getSmaller;
+		float					weightChange;
+		float					maxWeight;
+		float					minWeight;
 	};
 };
 

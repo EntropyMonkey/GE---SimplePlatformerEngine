@@ -114,20 +114,23 @@ void Dragon::Receive(InputMessage *message)
 {
 	if (message->action == InputMessage::KEY_DOWN)
 	{
-		if (message->key == SDLKey::SDLK_UP)
+		if (game->aiming)
 		{
-			turnCounterClockwise = true;
-			turnClockwise = false;
-		}
-		else if (message->key == SDLKey::SDLK_DOWN)
-		{
-			turnClockwise = true;
-			turnCounterClockwise = false;
-		}
+			if (message->key == SDLKey::SDLK_UP)
+			{
+				turnCounterClockwise = true;
+				turnClockwise = false;
+			}
+			else if (message->key == SDLKey::SDLK_DOWN)
+			{
+				turnClockwise = true;
+				turnCounterClockwise = false;
+			}
 
-		if (message->key == SDLKey::SDLK_SPACE)
-		{
-			game->Shoot(shootDirection);
+			if (message->key == SDLKey::SDLK_SPACE)
+			{
+				game->Shoot(shootDirection);
+			}
 		}
 	}
 	else if (message->action == InputMessage::KEY_UP)

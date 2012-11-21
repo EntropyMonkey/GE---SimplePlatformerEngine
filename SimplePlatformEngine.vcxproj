@@ -26,6 +26,7 @@
     <ClCompile Include="Source\SpriteHelper.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Background.h" />
     <ClInclude Include="Source\Camera.h" />
     <ClInclude Include="Source\CirclePO.h" />
     <ClInclude Include="Source\CollisionMessage.h" />

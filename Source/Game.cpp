@@ -14,8 +14,6 @@ Game::Game() :
 	{
 		Play();
 	}
-
-    SDL_Delay(3000);
 }
 
 // ------------------------------------------------------------- Initialize
@@ -31,14 +29,8 @@ void Game::Init()
 
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
-    screen = SDL_SetVideoMode(SCREEN_WIDTH, SCREEN_HEIGHT, 
+    SDL_SetVideoMode(SCREEN_WIDTH, SCREEN_HEIGHT, 
 		SCREEN_COLORDEPTH, SDL_HWSURFACE | SDL_DOUBLEBUF | SDL_OPENGL);
-
-    if (screen == NULL) 
-	{
-        printf("Can't set video mode: %s\n", SDL_GetError());
-        exit(1);
-    }
 	
 	// set gl matrices
 	glEnable(GL_TEXTURE_2D);
@@ -83,12 +75,15 @@ void Game::Init()
 
 	dragon = new Dragon(this, messenger);
 
+	aiming = true;
+
 	messenger->SendMessage(LogMessage("Game Started.\n"));
 }
 
 // ------------------------------------------------------------- LOOP LOGIC
 void Game::Play()
 {
+	// events
 	SDL_Event sdlEvent = SDL_Event();
 	while (SDL_PollEvent(&sdlEvent))
 	{
@@ -112,9 +107,9 @@ void Game::Play()
 	deltaTime = (float)((now - lastUpdateTime) / CLOCKS_PER_SEC) / timeScale;
 	lastUpdateTime = now;
 
-	// call update method of the game
+	// update
 	Update(deltaTime);
-	// call physics update
+	// physics update
 	physics->Update(deltaTime);
 	// call update for each game object
 	UpdateGameObjects(deltaTime);
@@ -171,6 +166,7 @@ void Game::Render()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH);
 
 	glPushMatrix();
+	// this line's the camera
 	glTranslatef(-currentBomb->position.x, 0, 0);
 		// render objects
 		floor->Render();
@@ -180,12 +176,13 @@ void Game::Render()
 	glPopMatrix();
 
 	SDL_GL_SwapBuffers();
-	//SDL_Flip(screen);
 }
 
 // ------------------------------------------------------------------ SHOOT
 void Game::Shoot(float angle)
 {
+	aiming = false;
+
 	currentBomb->position = vec2(
 		dragon->position.x + dragon->size.x * 0.45f,
 		dragon->position.y + dragon->size.x * 0.35f);

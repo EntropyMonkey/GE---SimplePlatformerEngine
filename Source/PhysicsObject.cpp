@@ -67,7 +67,8 @@ void PhysicsObject::Collide(PhysicsObject* other, glm::vec2 normal)
 	if (cosCollAngle > 0)
 	{
 		// make them move out of each other depending on their distance
-		float enhanceFactor = 1 / (this->position - other->position).length();
+		glm::vec2 distanceV = this->position - other->position;
+		float enhanceFactor = 1 / sqrt(distanceV.x * distanceV.x + distanceV.y * distanceV.y);
 		if (this->mass > 0)
 		{
 			this->velocity += normal * enhanceFactor * lastDeltaTime;
@@ -88,7 +89,6 @@ void PhysicsObject::Collide(PhysicsObject* other, glm::vec2 normal)
 			float friction = 0;
 			friction = (this->coeffOfFriction + collisionObject->coeffOfFriction) * 0.5f;
 			AddForce(-glm::normalize(lastVelocity) * friction);
-			//AddForce(glm::vec2(0, -GRAVITY));
 		}
 
 		// calculate shared bounciness

@@ -13,12 +13,14 @@ Floor::Floor(Game *_game, Messenger *_messenger) :
 	SpriteHelper::LoadTexture("Images/sprites/floor.png", sprite);
 
 	position = vec2(0, 400);
-	SetSize(vec2(10000, 100));
+	SetSize(vec2(100, 100));
 
 	useGravity = false;
 	mass = 0;
 	textureOffset = 0;
 	textureMovementSpeed = 0;
+	coeffOfRestitution = 1.0f;
+	coeffOfFriction = 500.0f; // it's a fake coefficient
 }
 
 Floor::~Floor()
@@ -39,7 +41,7 @@ void Floor::Render()
 	glBindTexture(GL_TEXTURE_2D, sprite);
 
 	glPushMatrix();
-	glTranslatef(position.x, position.y, 0);
+	glTranslatef(position.x, position.y - size.y * 0.5, 0);
 
 	int i = 6 * 4;
 	float stretch = 100.0f;
@@ -80,6 +82,6 @@ void Floor::Receive(CollisionMessage *message)
 	if (message->colliderOne == (PhysicsObject *)this ||
 		message->colliderTwo == (PhysicsObject *)this)
 	{
-		printf("collision with floor!");
+		//printf("collision with floor!");
 	}
 }

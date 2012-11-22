@@ -8,13 +8,14 @@ bool CirclePO::TestCollision(PhysicsObject* other)
 {
 	vec2 collisionNormal = vec2(0,0);
 	vec2 distanceVector = other->position - position;
+	float distance = sqrt(distanceVector.x * distanceVector.x + 
+		distanceVector.y * distanceVector.y);
 
-	if (other->radius + this->radius - distanceVector.length() >= 0)
+	if (other->radius + this->radius - distance >= 0)
 	{
 		if (other->GetShape() == CIRCLE)
 		{
-			distanceVector /= distanceVector.length();
-			collisionNormal = -distanceVector;
+			collisionNormal = -normalize(distanceVector);
 		}
 		else if (other->GetShape() == RECTANGLE)
 		{
@@ -56,6 +57,7 @@ bool CirclePO::TestCollision(PhysicsObject* other)
 			{
 				return false;
 			}
+			//printf("%f <= %f\n", position.y - radius, o.position.y + o.GetSize().y * 0.5f);
 		}
 		else
 		{
@@ -66,7 +68,6 @@ bool CirclePO::TestCollision(PhysicsObject* other)
 
 		return true;
 	}
-
 	return false;
 }
 

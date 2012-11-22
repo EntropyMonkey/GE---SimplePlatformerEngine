@@ -28,6 +28,7 @@
 #include "Player.h"
 #include "Floor.h"
 #include "Dragon.h"
+#include "Background.h"
 
 #include "IMessageReceiver.h"
 #include "Messenger.h"
@@ -39,6 +40,7 @@ namespace SPE
 	class Player;
 	class Floor;
 	class Dragon;
+	class Background;
 
 	public class Game : public IMessageReceiver
 	{

@@ -142,7 +142,7 @@ void Game::Receive(InputMessage *message)
 void Game::Update(float deltaTime)
 {
 	floor->textureMovementSpeed = currentBomb->velocity.x;
-	floor->position.x = currentBomb->position.x - 500.0f;
+	floor->position.x = currentBomb->position.x;
 
 	UpdateGameObjects(deltaTime);
 }
@@ -167,7 +167,7 @@ void Game::Render()
 
 	glPushMatrix();
 	// this line's the camera
-	glTranslatef(-currentBomb->position.x, 0, 0);
+	glTranslatef(-(currentBomb->position.x - /*currentBomb->radius -*/ 200), 0, 0);
 		// render objects
 		floor->Render();
 		dragon->Render();

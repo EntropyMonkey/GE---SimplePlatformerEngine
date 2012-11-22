@@ -52,10 +52,14 @@ namespace SPE
 		float					maxVelocity;
 
 		bool					getBigger;
+		float					getBiggerAntiBoost;
 		bool					getSmaller;
+		float					getSmallerBoost;
 		float					weightChange;
 		float					maxWeight;
 		float					minWeight;
+		float					minSize;
+		float					maxSize;
 	};
 };
 

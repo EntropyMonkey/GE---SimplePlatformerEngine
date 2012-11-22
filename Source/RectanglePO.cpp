@@ -15,13 +15,15 @@ void RectanglePO::Update(float deltaTime)
 bool RectanglePO::TestCollision(PhysicsObject *other)
 {
 	vec2 distanceVector = other->position - this->position;
-	float distance = distanceVector.length();
+	float distance = sqrt(distanceVector.x * distanceVector.x + 
+		distanceVector.y * distanceVector.y);
 
 	// broad phase
 	if (other->radius + this->radius - distance >= 0)
 	{
 		vec2 collisionNormal = vec2(0,0);
 
+		// get narrow
 		if (other->GetShape() == CIRCLE)
 		{
 			other->TestCollision(this);
@@ -90,7 +92,7 @@ PhysicsObject::Shape RectanglePO::GetShape()
 void RectanglePO::SetSize(vec2 _size)
 {
 	size = _size;
-	radius = size.length() * 0.5f;
+	radius = sqrt(size.x * size.x + size.y * size.y) * 0.5f;
 }
 
 vec2 RectanglePO::GetSize()

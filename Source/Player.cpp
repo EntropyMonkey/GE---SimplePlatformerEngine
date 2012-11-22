@@ -38,7 +38,7 @@ Player::Player(Game* _game, Messenger *_messenger) :
 
 	// set physics stuff
 	position = vec2(0, 0);
-	radius = 2.0;
+	radius = 20.0f;
 	mass = 1;
 
 	// fly state
@@ -50,8 +50,14 @@ Player::Player(Game* _game, Messenger *_messenger) :
 
 	// weight change
 	getBigger = false;
+	getBiggerAntiBoost = 50.0f;
 	getSmaller = false;
-	weightChange = 1;
+	getSmallerBoost = 300.0f;
+	weightChange = 10;
+	minWeight = 0.1f;
+	maxWeight = 400;
+	minSize = 32;
+	maxSize = 200;
 
 	// not doing this in the GameObject and PhysicsObject constructors
 	// because of circular reference trouble
@@ -99,16 +105,22 @@ void Player::Update(float deltaTime)
 	if (!game->aiming)
 	{
 		// make the bomb bigger and smaller
-		if (getBigger)
+		if (getBigger && mass - maxWeight <= 0.2f)
 		{
-			mass += weightChange * deltaTime;
+			AddForce(vec2(-1, 0) * getBiggerAntiBoost);
+
+			//mass += weightChange * deltaTime;
+			printf("%f\n", radius);
 			radius += weightChange * deltaTime;
-			printf("%f\n", mass);
+
+			mass = (mass > maxWeight ? maxWeight : mass);
 		}
-		else if (getSmaller)
+		else if (getSmaller && mass - minWeight > 0.2f)
 		{
-			printf("%f\n", mass);
-			mass -= weightChange * deltaTime;
+			AddForce(vec2(1, 0) * getSmallerBoost);
+
+			//mass -= weightChange * deltaTime;
+			printf("%f\n", radius);
 			radius -= weightChange * deltaTime;
 		}
 	}
@@ -120,26 +132,48 @@ void Player::Render()
 	glBindTexture(GL_TEXTURE_2D, sprites);
 
 	glPushMatrix();
-	glTranslatef(position.x, position.y, 0);
 
-	int i = 6 * 4;
-	glBegin(GL_QUADS);
-		// bottom left
-		glTexCoord2f (spriteRects[i + X], spriteRects[i + Y]);
-		glVertex3f (0.0, 0.0, 0.0);
+	float s = radius;//100/* * radius*/;/*72.5 * radius*/ //(radius / maxSize + minSize);
 
-		// bottom right
-		glTexCoord2f (spriteRects[i + W], spriteRects[i + Y]);
-		glVertex3f (32.0 * radius, 0.0, 0.0);
+	glTranslatef(position.x - s, position.y - s, 0);
 
-		// upper right
-		glTexCoord2f (spriteRects[i + W], spriteRects[i + H]);
-		glVertex3f (32.0 * radius, 32.0 * radius, 0.0);
-		
-		// upper left
-		glTexCoord2f (spriteRects[i + X], spriteRects[i + H]);
-		glVertex3f (0.0, 32.0 * radius, 0.0);
-	glEnd();
+	int i = 3 * 4;
+	
+	//glBegin(GL_QUADS);
+	//	// bottom left
+	//	glTexCoord2f (spriteRects[i + X], spriteRects[i + Y]);
+	//	glVertex3f (0.0, 0.0, 0.0);
+
+	//	// bottom right
+	//	glTexCoord2f (spriteRects[i + W], spriteRects[i + Y]);
+	//	glVertex3f (s, 0.0, 0.0);
+
+	//	// upper right
+	//	glTexCoord2f (spriteRects[i + W], spriteRects[i + H]);
+	//	glVertex3f (s, s, 0.0);
+	//	
+	//	// upper left
+	//	glTexCoord2f (spriteRects[i + X], spriteRects[i + H]);
+	//	glVertex3f (0.0, s, 0.0);
+	//glEnd();
+	
+	// disable texturing
+	glDisable(GL_TEXTURE_2D);
+	glBegin(GL_LINE_LOOP);
+ 
+	glColor3f(1, 1, 0);
+	  for (int i=0; i < 360; i++)
+	  {
+		 float degInRad = i*DEG2RAD;
+		  glVertex2f(cos(degInRad)*radius,sin(degInRad)*radius);
+	  }
+ 
+	   glEnd();
+
+		// reset color
+		glColor3f(1,1,1);
+		// enable texturing again
+		glEnable(GL_TEXTURE_2D);
 
 	glPopMatrix();
 }
@@ -147,8 +181,7 @@ void Player::Render()
 void Player::Shoot(glm::vec2 direction)
 {
 	// normalize direction just in case
-	flyDirection = direction / 
-		sqrt(direction.x * direction.x + direction.y * direction.y);
+	flyDirection = normalize(direction);
 
 	flyStartTimer = flyTime;
 	startFlying = true;
@@ -202,6 +235,6 @@ void Player::Receive(InputMessage *message)
 
 void Player::Receive(CollisionMessage *message)
 {
-	std::cout << "collision: " << message->colliderOne->id << " " << 
-		message->colliderTwo->id << std::endl;
+	/*std::cout << "collision: " << message->colliderOne->id << " " << 
+		message->colliderTwo->id << std::endl;*/
 }

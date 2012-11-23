@@ -11,6 +11,8 @@
 #include "IMessageReceiver.h"
 #include "InputMessage.h"
 
+#include "ScopedMatrix.h"
+
 namespace SPE
 {
 	class Game;

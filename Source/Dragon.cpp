@@ -25,10 +25,10 @@ Dragon::Dragon(Game *game, Messenger *messenger) :
 
 Dragon::~Dragon()
 {
+	game->Remove((GameObject*) this);
+
 	glDeleteTextures(1, &head);
 	glDeleteTextures(1, &body);
-
-	game->Remove((GameObject*) this);
 }
 
 void Dragon::Update(float deltaTime)
@@ -50,9 +50,10 @@ void Dragon::Update(float deltaTime)
 
 void Dragon::Render()
 {
-	glPushMatrix();
+	{
+		ScopedMatrix m = ScopedMatrix();
 
-	glTranslatef(position.x, position.y, 0);
+		glTranslatef(position.x, position.y, 0);
 
 		glBindTexture(GL_TEXTURE_2D, body);
 		glBegin(GL_QUADS);
@@ -73,34 +74,34 @@ void Dragon::Render()
 			glVertex3f (0.0, size.y, 0.0);
 		glEnd();
 
-		glPushMatrix();
-		glTranslatef(size.x * 0.5f, size.y * 0.5f, 0);
-		glRotatef(shootDirection, 0, 0, 1);
-		glTranslatef(-size.x * 0.5f, -size.y * 0.5f, 0);
+		{
+			ScopedMatrix m = ScopedMatrix();
 
-			glBindTexture(GL_TEXTURE_2D, head);
+			glTranslatef(size.x * 0.5f, size.y * 0.5f, 0);
+			glRotatef(shootDirection, 0, 0, 1);
+			glTranslatef(-size.x * 0.5f, -size.y * 0.5f, 0);
 
-			glBegin(GL_QUADS);
-				// bottom left
-				glTexCoord2f (0, 0);
-				glVertex3f (0.0, 0.0, 0.0);
+				glBindTexture(GL_TEXTURE_2D, head);
 
-				// bottom right
-				glTexCoord2f (1.0, 0.0);
-				glVertex3f (size.x, 0.0, 0.0);
+				glBegin(GL_QUADS);
+					// bottom left
+					glTexCoord2f (0, 0);
+					glVertex3f (0.0, 0.0, 0.0);
 
-				// upper right
-				glTexCoord2f (1.0, 1.0);
-				glVertex3f (size.x, size.y, 0.0);
+					// bottom right
+					glTexCoord2f (1.0, 0.0);
+					glVertex3f (size.x, 0.0, 0.0);
+
+					// upper right
+					glTexCoord2f (1.0, 1.0);
+					glVertex3f (size.x, size.y, 0.0);
 		
-				// upper left
-				glTexCoord2f (0.0, 1.0);
-				glVertex3f (0.0, size.y, 0.0);
-			glEnd();
-
-		glPopMatrix();
-
-	glPopMatrix();
+					// upper left
+					glTexCoord2f (0.0, 1.0);
+					glVertex3f (0.0, size.y, 0.0);
+				glEnd();
+		}
+	}
 }
 
 void Dragon::Receive(Message *message)

@@ -75,6 +75,8 @@ void Game::Init()
 
 	dragon = new Dragon(this, messenger);
 
+	background = new Background(this);
+
 	aiming = true;
 
 	messenger->SendMessage(LogMessage("Game Started.\n"));
@@ -144,6 +146,8 @@ void Game::Update(float deltaTime)
 	floor->textureMovementSpeed = currentBomb->velocity.x;
 	floor->position.x = currentBomb->position.x;
 
+	background->position.x = currentBomb->position.x;
+
 	UpdateGameObjects(deltaTime);
 }
 
@@ -165,15 +169,18 @@ void Game::Render()
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH);
 
-	glPushMatrix();
-	// this line's the camera
-	glTranslatef(-(currentBomb->position.x - /*currentBomb->radius -*/ 200), 0, 0);
-		// render objects
-		floor->Render();
-		dragon->Render();
+	{
+		ScopedMatrix m = ScopedMatrix();
+		// this line's the camera
+		glTranslatef(-(currentBomb->position.x - /*currentBomb->radius -*/ 200), 0, 0);
+			// render objects
+			background->Render();
+			
+			floor->Render();
+			dragon->Render();
 	
-		currentBomb->Render();
-	glPopMatrix();
+			currentBomb->Render();
+	}
 
 	SDL_GL_SwapBuffers();
 }
@@ -213,6 +220,7 @@ Game::~Game()
 		delete currentBomb;
 	delete floor;
 	delete dragon;
+	delete background;
 	
 	delete messenger;
 	delete physics;

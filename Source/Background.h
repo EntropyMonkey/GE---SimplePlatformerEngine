@@ -10,6 +10,8 @@
 #include "Game.h"
 #include "GameObject.h"
 
+#include "ScopedMatrix.h"
+
 namespace SPE
 {
 	class Game;
@@ -17,14 +19,17 @@ namespace SPE
 	public class Background : public GameObject
 	{
 	public:
-		vec2 position;
+		glm::vec2				position;
 		Background(Game *game);
+		~Background();
 
-		void Render();
-		void Update(float deltaTime);
+		void					Render();
+		void					Update(float deltaTime);
 
 	private:
-		GLuint texture;
+		GLuint					texture;
+		glm::vec2				size;
+		Game*					game;
 	};
 };
 

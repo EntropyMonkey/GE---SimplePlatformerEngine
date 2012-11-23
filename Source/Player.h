@@ -15,6 +15,8 @@
 #include "InputMessage.h"
 #include "CollisionMessage.h"
 
+#include "ScopedMatrix.h"
+
 namespace SPE
 {
 	class Game;
@@ -34,6 +36,8 @@ namespace SPE
 		void					Receive(Message *message);
 		void					Receive(InputMessage *message);
 		void					Receive(CollisionMessage *message);
+
+		void					OnCollision(PhysicsObject *o1, PhysicsObject *o2);
 
 	private:
 		Game*					game;

@@ -35,6 +35,8 @@
 #include "Message.h"
 #include "InputMessage.h"
 
+#include "ScopedMatrix.h"
+
 namespace SPE
 {
 	class Player;
@@ -90,6 +92,7 @@ namespace SPE
 		Player*					currentBomb;
 		float					shootSpeed;
 		Floor*					floor;
+		Background*				background;
 
 		void					Play();
 	};

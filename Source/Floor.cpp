@@ -25,10 +25,10 @@ Floor::Floor(Game *_game, Messenger *_messenger) :
 
 Floor::~Floor()
 {
-	glDeleteTextures(1, &sprite);
-
 	game->Remove((GameObject*)this);
 	game->Remove((PhysicsObject*)this);
+
+	glDeleteTextures(1, &sprite);
 }
 
 void Floor::Update(float deltaTime)
@@ -40,30 +40,31 @@ void Floor::Render()
 {
 	glBindTexture(GL_TEXTURE_2D, sprite);
 
-	glPushMatrix();
-	glTranslatef(position.x, position.y - size.y * 0.5, 0);
+	{
+		ScopedMatrix m = ScopedMatrix();
 
-	int i = 6 * 4;
-	float stretch = 100.0f;
-	glBegin(GL_QUADS);
-		// bottom left
-		glTexCoord2f (0 + textureOffset, 0);
-		glVertex3f (0.0, 0.0, 0.0);
+		glTranslatef(position.x, position.y, 0);
 
-		// bottom right
-		glTexCoord2f (1.0 * stretch + textureOffset, 0.0);
-		glVertex3f (size.x, 0.0, 0.0);
+		int i = 6 * 4;
+		float stretch = 100.0f;
+		glBegin(GL_QUADS);
+			// bottom left
+			glTexCoord2f (0 + textureOffset, 0);
+			glVertex3f (-size.x * 0.5f, -size.y * 0.5f, 0.0);
 
-		// upper right
-		glTexCoord2f (1.0 * stretch + textureOffset, 1.0);
-		glVertex3f (size.x, size.y, 0.0);
+			// bottom right
+			glTexCoord2f (1.0 * stretch + textureOffset, 0.0);
+			glVertex3f (size.x * 0.5f, -size.y * 0.5f, 0.0);
+
+			// upper right
+			glTexCoord2f (1.0 * stretch + textureOffset, 1.0);
+			glVertex3f (size.x * 0.5f, size.y * 0.5f, 0.0);
 		
-		// upper left
-		glTexCoord2f (0.0 + textureOffset, 1.0);
-		glVertex3f (0.0, size.y, 0.0);
-	glEnd();
-
-	glPopMatrix();
+			// upper left
+			glTexCoord2f (0.0 + textureOffset, 1.0);
+			glVertex3f (-size.x * 0.5f, size.y * 0.5f, 0.0);
+		glEnd();
+	}
 }
 
 void Floor::Receive(Message *message)

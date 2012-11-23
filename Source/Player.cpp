@@ -3,8 +3,8 @@
 using namespace SPE;
 using namespace glm;
 
-Player::Player(Game* _game, Messenger *_messenger) :
-	IMessageReceiver(_messenger),
+Player::Player(Game* _game, Messenger *_messenger, char *_texturePath) :
+	Bomb(_game, _messenger, _texturePath),
 	game(_game),
 	spriteNum(7),
 	spriteSize(64),
@@ -52,7 +52,7 @@ Player::Player(Game* _game, Messenger *_messenger) :
 	getBigger = false;
 	getBiggerAntiBoost = 50.0f;
 	getSmaller = false;
-	getSmallerBoost = 300.0f;
+	getSmallerBoost = 50.0f;
 	weightChange = 10;
 	minWeight = 0.1f;
 	maxWeight = 400;
@@ -67,9 +67,10 @@ Player::Player(Game* _game, Messenger *_messenger) :
 
 Player::~Player()
 {
-	glDeleteTextures(1, &sprites);
 	game->Remove((GameObject*)this);
 	game->Remove((PhysicsObject*)this);
+
+	glDeleteTextures(1, &sprites);
 }
 
 void Player::Active(bool _update, bool _render)
@@ -109,7 +110,7 @@ void Player::Update(float deltaTime)
 		{
 			AddForce(vec2(-1, 0) * getBiggerAntiBoost);
 
-			//mass += weightChange * deltaTime;
+			mass += weightChange * deltaTime;
 			printf("%f\n", radius);
 			radius += weightChange * deltaTime;
 
@@ -119,7 +120,7 @@ void Player::Update(float deltaTime)
 		{
 			AddForce(vec2(1, 0) * getSmallerBoost);
 
-			//mass -= weightChange * deltaTime;
+			mass -= weightChange * deltaTime;
 			printf("%f\n", radius);
 			radius -= weightChange * deltaTime;
 		}
@@ -131,51 +132,56 @@ void Player::Render()
 	glEnable(GL_BLEND);
 	glBindTexture(GL_TEXTURE_2D, sprites);
 
-	glPushMatrix();
+	{
+		ScopedMatrix m = ScopedMatrix();
 
-	float s = radius;//100/* * radius*/;/*72.5 * radius*/ //(radius / maxSize + minSize);
+		float s = radius + 0.6f * radius; // draw it bigger to make up for
+		// the image's border
 
-	glTranslatef(position.x - s, position.y - s, 0);
+		glTranslatef(position.x, position.y, 0);
 
-	int i = 3 * 4;
+		int i = 3 * 4;
+		
+		glBegin(GL_QUADS);
+			// bottom left
+			glTexCoord2f (spriteRects[i + X], spriteRects[i + Y]);
+			glVertex3f (-s, -s, 0.0);
+
+			// bottom right
+			glTexCoord2f (spriteRects[i + W], spriteRects[i + Y]);
+			glVertex3f (s, -s, 0.0);
+
+			// upper right
+			glTexCoord2f (spriteRects[i + W], spriteRects[i + H]);
+			glVertex3f (s, s, 0.0);
+		
+			// upper left
+			glTexCoord2f (spriteRects[i + X], spriteRects[i + H]);
+			glVertex3f (-s, s, 0.0);
+		glEnd();
 	
-	//glBegin(GL_QUADS);
-	//	// bottom left
-	//	glTexCoord2f (spriteRects[i + X], spriteRects[i + Y]);
-	//	glVertex3f (0.0, 0.0, 0.0);
-
-	//	// bottom right
-	//	glTexCoord2f (spriteRects[i + W], spriteRects[i + Y]);
-	//	glVertex3f (s, 0.0, 0.0);
-
-	//	// upper right
-	//	glTexCoord2f (spriteRects[i + W], spriteRects[i + H]);
-	//	glVertex3f (s, s, 0.0);
-	//	
-	//	// upper left
-	//	glTexCoord2f (spriteRects[i + X], spriteRects[i + H]);
-	//	glVertex3f (0.0, s, 0.0);
-	//glEnd();
-	
-	// disable texturing
-	glDisable(GL_TEXTURE_2D);
-	glBegin(GL_LINE_LOOP);
+		// disable texturing
+		/*glDisable(GL_TEXTURE_2D);
+		glBegin(GL_LINE_LOOP);
  
-	glColor3f(1, 1, 0);
-	  for (int i=0; i < 360; i++)
-	  {
-		 float degInRad = i*DEG2RAD;
-		  glVertex2f(cos(degInRad)*radius,sin(degInRad)*radius);
-	  }
+			glColor3f(1, 1, 0);
+			for (int i=0; i < 360; i++)
+			{
+				float degInRad = i*DEG2RAD;
+				glVertex2f(cos(degInRad)*radius,sin(degInRad)*radius);
+			}
  
-	   glEnd();
+		glEnd();
 
-		// reset color
-		glColor3f(1,1,1);
 		// enable texturing again
-		glEnable(GL_TEXTURE_2D);
+		glEnable(GL_TEXTURE_2D);*/
 
-	glPopMatrix();
+			// reset color
+		glColor3f(1,1,1);
+
+	}
+
+	glDisable(GL_BLEND);
 }
 
 void Player::Shoot(glm::vec2 direction)
@@ -185,6 +191,11 @@ void Player::Shoot(glm::vec2 direction)
 
 	flyStartTimer = flyTime;
 	startFlying = true;
+}
+
+void Player::OnCollision(PhysicsObject *o1, PhysicsObject *o2)
+{
+	messenger->SendMessage(CollisionMessage(o1, o2));
 }
 
 void Player::Receive(Message *message)

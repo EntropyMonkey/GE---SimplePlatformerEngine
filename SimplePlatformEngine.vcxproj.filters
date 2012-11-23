@@ -60,6 +60,12 @@
     <ClCompile Include="Source\Dragon.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Background.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Bomb.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\sdl_image\SDL_image.h">
@@ -119,7 +125,13 @@
     <ClInclude Include="Source\Dragon.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="Background.h">
+    <ClInclude Include="Source\Background.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ScopedMatrix.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="Bomb.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>

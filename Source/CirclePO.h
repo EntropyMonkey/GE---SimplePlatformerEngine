@@ -15,6 +15,8 @@ namespace SPE
 			
 		bool				TestCollision(PhysicsObject* other);
 		Shape				GetShape();
+
+		virtual void		OnCollision(PhysicsObject *o1, PhysicsObject *o2) = 0;
 	};
 };
 

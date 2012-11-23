@@ -11,6 +11,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Background.cpp" />
+    <ClCompile Include="Source\Bomb.cpp" />
     <ClCompile Include="Source\CirclePO.cpp" />
     <ClCompile Include="Source\Dragon.cpp" />
     <ClCompile Include="Source\Floor.cpp" />
@@ -26,7 +28,8 @@
     <ClCompile Include="Source\SpriteHelper.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Background.h" />
+    <ClInclude Include="Bomb.h" />
+    <ClInclude Include="Source\Background.h" />
     <ClInclude Include="Source\Camera.h" />
     <ClInclude Include="Source\CirclePO.h" />
     <ClInclude Include="Source\CollisionMessage.h" />
@@ -38,6 +41,7 @@
     <ClInclude Include="Source\InputMessage.h" />
     <ClInclude Include="Source\Log.h" />
     <ClInclude Include="Source\LogMessage.h" />
+    <ClInclude Include="Source\ScopedMatrix.h" />
     <ClInclude Include="Source\Message.h" />
     <ClInclude Include="Source\Messenger.h" />
     <ClInclude Include="Source\Physics.h" />

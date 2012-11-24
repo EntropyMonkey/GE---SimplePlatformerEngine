@@ -6,7 +6,7 @@ using namespace glm;
 Bomb::Bomb(Game *game, Messenger *messenger, char* texturePath) :
 	IMessageReceiver(messenger),
 	spriteNum(7),
-	spriteSize(64),
+	spriteSize(64)
 {
 	this->game = game;
 	game->Add((GameObject*)this);
@@ -37,9 +37,86 @@ Bomb::Bomb(Game *game, Messenger *messenger, char* texturePath) :
 			y++;
 		}
 	}
+
+	currentSprite = 0;
+
+	// physics stuff
+	mass = 10;
 }
 
 Bomb::~Bomb()
 {
-	glDeleteTextures(1, sprites);
+	glDeleteTextures(1, &sprites);
+}
+
+void Bomb::Update(float deltaTime)
+{
+
+}
+
+void Bomb::Render()
+{
+	glEnable(GL_BLEND);
+	glBindTexture(GL_TEXTURE_2D, sprites);
+
+	{
+		ScopedMatrix m = ScopedMatrix();
+
+		float s = radius + 0.6f * radius; // draw it bigger to make up for
+		// the image's border
+
+		glTranslatef(position.x, position.y, 0);
+
+		int i = currentSprite * 4;
+		
+		glBegin(GL_QUADS);
+			// bottom left
+			glTexCoord2f (spriteRects[i + X], spriteRects[i + Y]);
+			glVertex3f (-s, -s, 0.0);
+
+			// bottom right
+			glTexCoord2f (spriteRects[i + W], spriteRects[i + Y]);
+			glVertex3f (s, -s, 0.0);
+
+			// upper right
+			glTexCoord2f (spriteRects[i + W], spriteRects[i + H]);
+			glVertex3f (s, s, 0.0);
+		
+			// upper left
+			glTexCoord2f (spriteRects[i + X], spriteRects[i + H]);
+			glVertex3f (-s, s, 0.0);
+		glEnd();
+	
+		// disable texturing
+		/*glDisable(GL_TEXTURE_2D);
+		glBegin(GL_LINE_LOOP);
+ 
+			glColor3f(1, 1, 0);
+			for (int i=0; i < 360; i++)
+			{
+				float degInRad = i*DEG2RAD;
+				glVertex2f(cos(degInRad)*radius,sin(degInRad)*radius);
+			}
+ 
+		glEnd();
+
+		// enable texturing again
+		glEnable(GL_TEXTURE_2D);*/
+
+			// reset color
+		glColor3f(1,1,1);
+
+	}
+
+	glDisable(GL_BLEND);
+}
+
+void Bomb::Receive(Message *message)
+{
+
+}
+
+void Bomb::OnCollision(PhysicsObject *o1, PhysicsObject *o2)
+{
+	messenger->SendMessage(CollisionMessage(o1, o2));
 }

@@ -21,7 +21,8 @@ namespace SPE
 {
 	class Game;
 
-	public class Player : public GameObject, public CirclePO, public IMessageReceiver
+	public class Player : 
+		public GameObject, public CirclePO, public IMessageReceiver
 	{
 	public:
 								Player(Game *_game, Messenger *_messenger);
@@ -46,6 +47,7 @@ namespace SPE
 		float*					spriteRects;
 		const unsigned int		spriteNum;
 		const unsigned int		spriteSize;
+		int						currentSprite;
 
 		bool					startFlying;
 		float					flySpeed;

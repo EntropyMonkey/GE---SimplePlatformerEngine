@@ -1,10 +1,15 @@
 #ifndef BOMB_H
 #define BOMB_H
 
+#include "Game.h"
 #include "GameObject.h"
-#include "PhysicsObject.h"
+#include "CirclePO.h"
+
 #include "IMessageReceiver.h"
 #include "Message.h"
+#include "CollisionMessage.h"
+
+#include "ScopedMatrix.h"
 
 namespace SPE
 {
@@ -14,23 +19,24 @@ namespace SPE
 		public GameObject, public CirclePO, public IMessageReceiver
 	{
 	public:
-		Bomb(Game *game, Messenger *messenger);
+		Bomb(Game *game, Messenger *messenger, char* texturePath);
 		virtual ~Bomb();
 
-		void					Render();
-		void					Update(float deltaTime);
+		virtual void			Render();
+		virtual void			Update(float deltaTime);
 
-		void					Receive(Message *message);
+		virtual void			Receive(Message *message);
 
-		void					OnCollision(PhysicsObject *o1, PhysicsObject *o2) = 0;
+		void					OnCollision(PhysicsObject *o1, PhysicsObject *o2);
 
 	protected:
-		Game *game;
+		Game *					game;
 		
 		GLuint					sprites;
 		float*					spriteRects;
 		const unsigned int		spriteNum;
 		const unsigned int		spriteSize;
+		int						currentSprite;
 	};
 };
 

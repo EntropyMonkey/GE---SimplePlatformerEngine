@@ -3,8 +3,8 @@
 using namespace SPE;
 using namespace glm;
 
-Player::Player(Game* _game, Messenger *_messenger, char *_texturePath) :
-	Bomb(_game, _messenger, _texturePath),
+Player::Player(Game* _game, Messenger *_messenger) :
+	IMessageReceiver(_messenger),
 	game(_game),
 	spriteNum(7),
 	spriteSize(64),
@@ -35,6 +35,8 @@ Player::Player(Game* _game, Messenger *_messenger, char *_texturePath) :
 			y++;
 		}
 	}
+
+	currentSprite = 0;
 
 	// set physics stuff
 	position = vec2(0, 0);

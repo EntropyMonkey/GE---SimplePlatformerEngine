@@ -50,6 +50,7 @@ void Dragon::Update(float deltaTime)
 
 void Dragon::Render()
 {
+	glEnable(GL_BLEND);
 	{
 		ScopedMatrix m = ScopedMatrix();
 
@@ -102,6 +103,8 @@ void Dragon::Render()
 				glEnd();
 		}
 	}
+
+	glDisable(GL_BLEND);
 }
 
 void Dragon::Receive(Message *message)

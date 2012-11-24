@@ -77,6 +77,10 @@ void Game::Init()
 
 	background = new Background(this);
 
+	testbomb = new Bomb(this, messenger, "Images/Sprites/bomb.png");
+	testbomb->position = vec2(1000,0);
+	testbomb->radius = 10;
+
 	aiming = true;
 
 	messenger->SendMessage(LogMessage("Game Started.\n"));
@@ -179,6 +183,8 @@ void Game::Render()
 			floor->Render();
 			dragon->Render();
 	
+			testbomb->Render();
+
 			currentBomb->Render();
 	}
 
@@ -221,6 +227,7 @@ Game::~Game()
 	delete floor;
 	delete dragon;
 	delete background;
+	delete testbomb;
 	
 	delete messenger;
 	delete physics;

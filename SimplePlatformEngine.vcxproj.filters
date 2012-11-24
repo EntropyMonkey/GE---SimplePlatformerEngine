@@ -131,7 +131,7 @@
     <ClInclude Include="Source\ScopedMatrix.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="Bomb.h">
+    <ClInclude Include="Source\Bomb.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>

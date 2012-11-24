@@ -19,7 +19,7 @@ namespace SPE
 
 		virtual void Receive(Message *message) = 0;
 
-	private:
+	protected:
 		Messenger *messenger;
 	};
 };

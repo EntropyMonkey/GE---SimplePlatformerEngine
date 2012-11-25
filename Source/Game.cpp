@@ -5,7 +5,8 @@ using namespace std;
 using namespace glm;
 
 Game::Game() :
-	IMessageReceiver(messenger, false)
+	IMessageReceiver(messenger, false),
+	spawnTime(5.0f)
 {
     Init();
 
@@ -78,6 +79,7 @@ void Game::Init()
 	// initialize spawning
 	spawnArea = vec2(100, 400);
 	spawnHeadStart = 500;
+	spawnTimer = spawnTime;
 
 	srand(clock());
 
@@ -152,6 +154,14 @@ void Game::Update(float deltaTime)
 
 	background->position.x = playerBomb->position.x;
 
+	spawnTimer -= deltaTime;
+	printf("%f\n", spawnTimer);
+	if (spawnTimer <= 0.0f)
+	{
+		spawnTimer = spawnTime;
+		SpawnBomb();
+	}
+
 	UpdateGameObjects(deltaTime);
 }
 
@@ -224,7 +234,8 @@ void Game::SpawnBomb()
 	spawnedBombs->back()->position.y = rand() / RAND_MAX * 
 		(spawnArea.y - spawnArea.x) + spawnArea.x;
 
-	printf("%f\n", spawnedBombs->back()->position.y);
+	//printf("spawned bomb: %i\n", spawnedBombs->back()->id);
+	//printf("%f\n", spawnedBombs->back()->position.y);
 }
 
 // ------------------------------------------------------------------ RESET
@@ -246,7 +257,7 @@ Game::~Game()
 	delete dragon;
 	delete background;
 	
-	for (int i = 0; i < 20; i++)
+	for (int i = 0; i < spawnedBombs->size(); i++)
 	{
 		if (spawnedBombs->operator [](i) != NULL)
 			delete spawnedBombs->operator[](i);

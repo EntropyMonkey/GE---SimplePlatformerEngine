@@ -102,6 +102,8 @@ namespace SPE
 
 		glm::vec2				spawnArea;
 		float					spawnHeadStart;
+		const float				spawnTime;
+		float					spawnTimer;
 
 		void					Play();
 	};

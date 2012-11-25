@@ -42,16 +42,54 @@ Bomb::Bomb(Game *game, Messenger *messenger, char* texturePath) :
 
 	// physics stuff
 	mass = 10;
+	radius = 20;
+	useGravity = false;
+
+	Active(false, false);
+	physicsActive = false;
+
+	enteredScreen = false;
 }
 
 Bomb::~Bomb()
 {
 	glDeleteTextures(1, &sprites);
+	game->Remove((GameObject*)this);
+	game->Remove((PhysicsObject*)this);
 }
 
 void Bomb::Update(float deltaTime)
 {
+	//printf("%i %f %f\n", id, position.x, position.y);
+	// check if still in screen after entering it
+	if (IsVisible() && !enteredScreen)
+	{
+		enteredScreen = true;
+		Active(true, true);
+		physicsActive = true;
+	}
+	else if (enteredScreen)
+	{
+		delete this;
+	}
 
+	if (id % 10 == 0)
+		printf("%s", IsVisible());
+}
+
+bool Bomb::IsVisible()
+{
+	if ((position.x < game->cameraPos.x - SCREEN_WIDTH * 0.5f ||
+		position.x > game->cameraPos.x + SCREEN_WIDTH * 0.5f) &&
+		(position.y < game->cameraPos.y - SCREEN_HEIGHT * 0.5f ||
+		position.y > game->cameraPos.y + SCREEN_HEIGHT * 0.5f))
+	{
+		return false;
+	}
+	else
+	{
+		return true;
+	}
 }
 
 void Bomb::Render()
@@ -113,7 +151,13 @@ void Bomb::Render()
 
 void Bomb::Receive(Message *message)
 {
+	CollisionMessage *msg = dynamic_cast<CollisionMessage*>(message);
+	if (msg)
+		Receive(msg);
+}
 
+void Bomb::Receive(CollisionMessage *message)
+{
 }
 
 void Bomb::OnCollision(PhysicsObject *o1, PhysicsObject *o2)

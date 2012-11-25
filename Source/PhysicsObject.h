@@ -5,18 +5,16 @@
 #include <glm/glm.hpp>
 
 #include "Physics.h"
+#include "BaseObject.h"
 
 namespace SPE
 {
 	class Physics; // forward declaration
 
-	public class PhysicsObject
+	public class PhysicsObject : public virtual BaseObject
 	{
 	public:
 		enum Shape {RECTANGLE, CIRCLE};
-
-		// starts at 1
-		const unsigned int		id;
 		
 		bool					physicsActive;
 
@@ -42,7 +40,8 @@ namespace SPE
 		void 					Integrate(float deltaTime);
 
 		virtual bool			TestCollision(PhysicsObject* other) = 0;
-		void					Collide(PhysicsObject* other, glm::vec2 normal);
+		void					Collide(PhysicsObject* other, 
+			glm::vec2 normal);
 
 		// add an impulse force
 		void					AddForce(glm::vec2 force);
@@ -54,9 +53,6 @@ namespace SPE
 		glm::vec2				currentForce;
 		PhysicsObject*			collisionObject;
 		PhysicsObject*			lastCollisionObject;
-			
-	private:
-		static unsigned int		nextFreeId;
 	};
 };
 

@@ -13,13 +13,13 @@ Floor::Floor(Game *_game, Messenger *_messenger) :
 	SpriteHelper::LoadTexture("Images/sprites/floor.png", sprite);
 
 	position = vec2(0, 400);
-	SetSize(vec2(100, 100));
+	SetSize(vec2(10000, 100));
 
 	useGravity = false;
 	mass = 0;
 	textureOffset = 0;
 	textureMovementSpeed = 0;
-	coeffOfRestitution = 1.0f;
+	coeffOfRestitution = 0.8f;
 	coeffOfFriction = 500.0f; // it's a fake coefficient
 }
 

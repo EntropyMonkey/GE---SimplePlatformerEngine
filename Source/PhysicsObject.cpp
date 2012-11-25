@@ -4,11 +4,10 @@ using namespace SPE;
 
 unsigned int PhysicsObject::nextFreeId = 0;
 
-PhysicsObject::PhysicsObject() : 
-	id(++nextFreeId)
+PhysicsObject::PhysicsObject()
 {
-
-	currentForce = position = velocity = lastVelocity = acceleration = glm::vec2(0,0);
+	currentForce = position = velocity = glm::vec2(0, 0);
+	lastVelocity = acceleration = glm::vec2(0,0);
 	//orientation = angularVelocity = 0;
 	mass = 1;
 	coeffOfRestitution = 1.0f;
@@ -96,11 +95,16 @@ void PhysicsObject::Collide(PhysicsObject* other, glm::vec2 normal)
 			-(1 + (coeffOfRestitution + other->coeffOfRestitution) * 0.5f);
 
 		// bounce away from other object and make the other one bounce away from me
+		float temp1 = relativeVelocity.x * normal.x + 
+			relativeVelocity.y * normal.y;
+		float temp2 = normal.x * normal.x + normal.y * normal.y;
+		
 		float responseStrength =
 			(newCoeffOfRestitution * glm::dot(relativeVelocity, normal)) /
 			( glm::dot(normal, normal) * 
 			// hack for infinite/zero mass objects
-			(1 / (this->mass != 0 ? this->mass : 1000000) + 1 / (other->mass != 0 ? other->mass : 1000000)));
+			(1 / (this->mass != 0 ? this->mass : 1000000) + 1 / 
+			(other->mass != 0 ? other->mass : 1000000)));
 
 		if (this->mass != 0)
 		{

@@ -52,14 +52,14 @@ Player::Player(Game* _game, Messenger *_messenger) :
 
 	// weight change
 	getBigger = false;
-	getBiggerAntiBoost = 50.0f;
+	getBiggerAntiBoost = 0.2f;
 	getSmaller = false;
-	getSmallerBoost = 50.0f;
+	getSmallerBoost = 0.3f;
 	weightChange = 10;
 	minWeight = 0.1f;
-	maxWeight = 400;
+	maxWeight = 50;
 	minSize = 32;
-	maxSize = 200;
+	maxSize = 50;
 
 	// not doing this in the GameObject and PhysicsObject constructors
 	// because of circular reference trouble
@@ -84,6 +84,7 @@ void Player::Active(bool _update, bool _render)
 
 void Player::Update(float deltaTime)
 {
+	//printf("%f %f\n", position.x, position.y);
 	if (startFlying)
 	{
 		// give the bomb a push for some time in the beginning
@@ -108,19 +109,19 @@ void Player::Update(float deltaTime)
 	if (!game->aiming)
 	{
 		// make the bomb bigger and smaller
-		if (getBigger && mass - maxWeight <= 0.2f)
+		if (getBigger && mass < maxWeight)
 		{
 			AddForce(vec2(-1, 0) * getBiggerAntiBoost);
+			velocity -= velocity * getBiggerAntiBoost * deltaTime;
 
 			mass += weightChange * deltaTime;
 			printf("%f\n", radius);
 			radius += weightChange * deltaTime;
-
-			mass = (mass > maxWeight ? maxWeight : mass);
 		}
 		else if (getSmaller && mass - minWeight > 0.2f)
 		{
 			AddForce(vec2(1, 0) * getSmallerBoost);
+			velocity += velocity * getSmallerBoost * deltaTime;
 
 			mass -= weightChange * deltaTime;
 			printf("%f\n", radius);

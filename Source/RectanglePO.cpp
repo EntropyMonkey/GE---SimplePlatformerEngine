@@ -26,7 +26,7 @@ bool RectanglePO::TestCollision(PhysicsObject *other)
 		// get narrow
 		if (other->GetShape() == CIRCLE)
 		{
-			other->TestCollision(this);
+			return other->TestCollision(this);
 		}
 		//else if (other->GetShape() == RectanglePO)
 		//{

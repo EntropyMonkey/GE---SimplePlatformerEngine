@@ -134,5 +134,8 @@
     <ClInclude Include="Source\Bomb.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="BaseObject.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

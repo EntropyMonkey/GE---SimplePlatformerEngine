@@ -65,21 +65,21 @@ void Game::Init()
 	physics->Start();
 
 	// initialize timescale
-	timeScale = 1;
+	timeScale = 1.0f;
 
 	// initialize objects
-	currentBomb = new Player(this, messenger);
-	currentBomb->Active(false, false);
-	
+	playerBomb = new Player(this, messenger);
+	playerBomb->Active(false, false);
 	floor = new Floor(this, messenger);
-
 	dragon = new Dragon(this, messenger);
-
 	background = new Background(this);
+	spawnedBombs = new std::vector<Bomb*>();
 
-	testbomb = new Bomb(this, messenger, "Images/Sprites/bomb.png");
-	testbomb->position = vec2(1000,0);
-	testbomb->radius = 10;
+	// initialize spawning
+	spawnArea = vec2(100, 400);
+	spawnHeadStart = 500;
+
+	srand(clock());
 
 	aiming = true;
 
@@ -147,10 +147,10 @@ void Game::Receive(InputMessage *message)
 // ----------------------------------------------------------------- UPDATE
 void Game::Update(float deltaTime)
 {
-	floor->textureMovementSpeed = currentBomb->velocity.x;
-	floor->position.x = currentBomb->position.x;
+	floor->textureMovementSpeed = playerBomb->velocity.x;
+	floor->position.x = playerBomb->position.x;
 
-	background->position.x = currentBomb->position.x;
+	background->position.x = playerBomb->position.x;
 
 	UpdateGameObjects(deltaTime);
 }
@@ -176,16 +176,23 @@ void Game::Render()
 	{
 		ScopedMatrix m = ScopedMatrix();
 		// this line's the camera
-		glTranslatef(-(currentBomb->position.x - /*currentBomb->radius -*/ 200), 0, 0);
+		cameraPos = playerBomb->position;
+		cameraPos.x -= 200;
+		cameraPos.y = 0;
+		glTranslatef(-cameraPos.x, -cameraPos.y, 0);
 			// render objects
 			background->Render();
 			
 			floor->Render();
 			dragon->Render();
 	
-			testbomb->Render();
+			for (int i = 0; i < spawnedBombs->size(); i++)
+			{
+				if (spawnedBombs->operator [](i) != NULL)
+					spawnedBombs->operator [](i)->Render();
+			}
 
-			currentBomb->Render();
+			playerBomb->Render();
 	}
 
 	SDL_GL_SwapBuffers();
@@ -196,17 +203,28 @@ void Game::Shoot(float angle)
 {
 	aiming = false;
 
-	currentBomb->position = vec2(
+	playerBomb->position = vec2(
 		dragon->position.x + dragon->size.x * 0.45f,
 		dragon->position.y + dragon->size.x * 0.35f);
-	currentBomb->velocity = vec2(0, 0);
+	playerBomb->velocity = vec2(0, 0);
 	
 	// take angle and shootspeed(radius of 1) as polar coordinates and convert them to
 	// cartesian coords
 	vec2 direction = vec2(cos(angle * DEG2RAD), sin(angle * DEG2RAD));
 
-	currentBomb->Active(true, true);
-	currentBomb->Shoot(direction);
+	playerBomb->Active(true, true);
+	playerBomb->Shoot(direction);
+}
+
+// -------------------------------------------------------------- SPAWNBOMB
+void Game::SpawnBomb()
+{
+	spawnedBombs->push_back(new Bomb(this, messenger));
+	spawnedBombs->back()->position.x = playerBomb->position.x + spawnHeadStart;
+	spawnedBombs->back()->position.y = rand() / RAND_MAX * 
+		(spawnArea.y - spawnArea.x) + spawnArea.x;
+
+	printf("%f\n", spawnedBombs->back()->position.y);
 }
 
 // ------------------------------------------------------------------ RESET
@@ -222,12 +240,18 @@ void Game::Quit()
 
 Game::~Game()
 {
-	if (currentBomb)
-		delete currentBomb;
+	if (playerBomb)
+		delete playerBomb;
 	delete floor;
 	delete dragon;
 	delete background;
-	delete testbomb;
+	
+	for (int i = 0; i < 20; i++)
+	{
+		if (spawnedBombs->operator [](i) != NULL)
+			delete spawnedBombs->operator[](i);
+	}
+	delete spawnedBombs;
 	
 	delete messenger;
 	delete physics;

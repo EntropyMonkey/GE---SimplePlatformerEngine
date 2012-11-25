@@ -1,9 +1,11 @@
 #ifndef GAMEOBJECT_H
 #define GAMEOBJECT_H
 
+#include "BaseObject.h"
+
 namespace SPE
 {
-	public class GameObject
+	public class GameObject : public virtual BaseObject
 	{
 	public:
 		bool					update;

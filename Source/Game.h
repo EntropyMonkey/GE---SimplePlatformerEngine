@@ -51,6 +51,8 @@ namespace SPE
 	public:
 		bool					aiming; // if player is loading the dragon
 
+		glm::vec2				cameraPos;
+
 		Game();
 		~Game();
 		
@@ -71,6 +73,7 @@ namespace SPE
 		void					Receive(InputMessage *message);
 
 		void					Shoot(float direction);
+		void					SpawnBomb();
 
 		void					Reset();
 		void					Quit();
@@ -91,11 +94,14 @@ namespace SPE
 		Physics*				physics;
 
 		Dragon*					dragon;
-		Player*					currentBomb;
-		Bomb*					testbomb;
+		Player*					playerBomb;
+		std::vector<Bomb*>*		spawnedBombs;
 		float					shootSpeed;
 		Floor*					floor;
 		Background*				background;
+
+		glm::vec2				spawnArea;
+		float					spawnHeadStart;
 
 		void					Play();
 	};

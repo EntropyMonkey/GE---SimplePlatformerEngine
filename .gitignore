@@ -34,3 +34,8 @@ Images/sprites/L
 Images/sprites/M
 Images/sprites/S
 Images/sprites/XL
+
+*.aux
+*.dvi
+*.lof
+*.toc

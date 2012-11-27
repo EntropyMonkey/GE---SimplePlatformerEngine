@@ -5,9 +5,9 @@ using namespace std;
 using namespace glm;
 
 Game::Game() :
-	IMessageReceiver(messenger, false),
 	spawnTime(5.0f)
 {
+	lastUpdateTime = clock();
     Init();
 
 	quit = false;
@@ -56,7 +56,6 @@ void Game::Init()
 
 	// initialize messenger
 	messenger = new Messenger();
-	messenger->Register(this);
 
 	// initialize log
 	log = new Log(messenger);
@@ -71,21 +70,28 @@ void Game::Init()
 	// initialize objects
 	playerBomb = new Player(this, messenger);
 	playerBomb->Active(false, false);
-	floor = new Floor(this, messenger);
+	floor = new LimitCollider(this, messenger);
+	floor->position = vec2(0, 450);
+	ceiling = new LimitCollider(this, messenger);
+	ceiling->position = vec2(0, 0);
+
 	dragon = new Dragon(this, messenger);
 	background = new Background(this);
 	spawnedBombs = new std::vector<Bomb*>();
 
 	// initialize spawning
 	spawnArea = vec2(100, 400);
-	spawnHeadStart = 500;
+	spawnHeadStart = 300;
 	spawnTimer = spawnTime;
 
 	srand(clock());
 
 	aiming = true;
+	startingGame = true;
+	gameOver = false;
 
-	messenger->SendMessage(LogMessage("Game Started.\n"));
+	startScreen = new InfoScreen("Images/startscreen.png");
+	gameOverScreen = new InfoScreen("Images/gameoverscreen.png");
 }
 
 // ------------------------------------------------------------- LOOP LOGIC
@@ -124,26 +130,16 @@ void Game::Play()
 
 	// render the game
 	Render();
-}
 
-// ------------------------------------------------------- Receive Messages
-void Game::Receive(Message *message)
-{
-	InputMessage *msg = dynamic_cast<InputMessage*>(message);
-	if (msg)
-		Receive(msg);
-}
-
-void Game::Receive(InputMessage *message)
-{
-	if (message->action == InputMessage::KEY_UP)
+	// remove game objects which have been marked for deletion
+	for (list<GameObject*>::iterator it = gameObjectsToDelete.begin();
+		it != gameObjectsToDelete.end();
+		it++)
 	{
-		if (message->key == SDLKey::SDLK_SPACE)
-		{
-			Reset();
-			SDL_GL_SwapBuffers();
-		}
+		gameObjects.remove(*it);
 	}
+
+	gameObjectsToDelete.clear();
 }
 
 // ----------------------------------------------------------------- UPDATE
@@ -152,14 +148,17 @@ void Game::Update(float deltaTime)
 	floor->textureMovementSpeed = playerBomb->velocity.x;
 	floor->position.x = playerBomb->position.x;
 
+	ceiling->textureMovementSpeed = floor->textureMovementSpeed;
+	ceiling->position.x = floor->position.x;
+
 	background->position.x = playerBomb->position.x;
 
 	spawnTimer -= deltaTime;
-	printf("%f\n", spawnTimer);
 	if (spawnTimer <= 0.0f)
 	{
 		spawnTimer = spawnTime;
 		SpawnBomb();
+		spawnTime *= 0.9f;
 	}
 
 	UpdateGameObjects(deltaTime);
@@ -182,7 +181,7 @@ void Game::UpdateGameObjects(float deltaTime)
 void Game::Render()
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH);
-
+	
 	{
 		ScopedMatrix m = ScopedMatrix();
 		// this line's the camera
@@ -190,21 +189,40 @@ void Game::Render()
 		cameraPos.x -= 200;
 		cameraPos.y = 0;
 		glTranslatef(-cameraPos.x, -cameraPos.y, 0);
-			// render objects
-			background->Render();
+
+		// render objects
+		background->Render();
 			
-			floor->Render();
-			dragon->Render();
+		floor->Render();
+		ceiling->Render();
+		dragon->Render();
 	
-			for (int i = 0; i < spawnedBombs->size(); i++)
-			{
-				if (spawnedBombs->operator [](i) != NULL)
-					spawnedBombs->operator [](i)->Render();
-			}
+		for (int i = 0; i < spawnedBombs->size(); i++)
+		{
+			if (spawnedBombs->operator [](i) != NULL)
+				spawnedBombs->operator [](i)->Render();
+		}
 
-			playerBomb->Render();
+		playerBomb->Render();
 	}
+	
+	if (startingGame)
+	{
+		startScreen->Render();
+		SDL_GL_SwapBuffers();
+		SDL_Delay(5000);
+		startingGame = false;
 
+		messenger->SendMessage(LogMessage("Game Started.\n"));
+	}
+	else if (gameOver)
+	{
+		gameOverScreen->Render();
+		SDL_GL_SwapBuffers();
+		messenger->SendMessage(LogMessage("Game Over.\n"));
+		SDL_Delay(5000);
+		Quit();
+	}
 	SDL_GL_SwapBuffers();
 }
 
@@ -231,16 +249,20 @@ void Game::SpawnBomb()
 {
 	spawnedBombs->push_back(new Bomb(this, messenger));
 	spawnedBombs->back()->position.x = playerBomb->position.x + spawnHeadStart;
-	spawnedBombs->back()->position.y = rand() / RAND_MAX * 
+	spawnedBombs->back()->position.y = (float)rand() / RAND_MAX * 
 		(spawnArea.y - spawnArea.x) + spawnArea.x;
-
-	//printf("spawned bomb: %i\n", spawnedBombs->back()->id);
-	//printf("%f\n", spawnedBombs->back()->position.y);
 }
 
 // ------------------------------------------------------------------ RESET
 void Game::Reset()
 {
+
+}
+
+// -------------------------------------------------------------- GAME OVER
+void Game::GameOver()
+{
+	gameOver = true;
 }
 
 // ------------------------------------------------------------------- QUIT
@@ -254,14 +276,11 @@ Game::~Game()
 	if (playerBomb)
 		delete playerBomb;
 	delete floor;
+	delete ceiling;
 	delete dragon;
 	delete background;
 	
-	for (int i = 0; i < spawnedBombs->size(); i++)
-	{
-		if (spawnedBombs->operator [](i) != NULL)
-			delete spawnedBombs->operator[](i);
-	}
+	spawnedBombs->erase(spawnedBombs->begin(), spawnedBombs->end());
 	delete spawnedBombs;
 	
 	delete messenger;
@@ -289,5 +308,5 @@ void Game::Add(GameObject *gameObject)
 
 void Game::Remove(GameObject *gameObject)
 {
-	gameObjects.remove(gameObject);
+	gameObjectsToDelete.push_back(gameObject); // make sure gameobjects are not deleted while updating them
 }

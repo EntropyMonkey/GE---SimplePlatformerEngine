@@ -1,5 +1,5 @@
-#ifndef FLOOR_H
-#define FLOOR_H
+#ifndef LIMITCOLLIDER_H
+#define LIMITCOLLIDER_H
 
 #include <glm/glm.hpp>
 #include "SDL_image/SDL_image.h"
@@ -17,13 +17,13 @@ namespace SPE
 {
 	class Game;
 
-	public class Floor : public RectanglePO, public GameObject, public IMessageReceiver
+	public class LimitCollider : public RectanglePO, public GameObject, public IMessageReceiver
 	{
 	public:
 		float					textureMovementSpeed;
 
-								Floor(Game *_game, Messenger *_messenger);
-		virtual					~Floor();
+								LimitCollider(Game *_game, Messenger *_messenger);
+		virtual					~LimitCollider();
 
 		void					Render();
 		void					Update(float deltaTime);

@@ -54,9 +54,6 @@
     <ClCompile Include="Source\RectanglePO.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Floor.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Dragon.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
@@ -64,6 +61,9 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="Source\Bomb.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\LimitCollider.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>
@@ -119,9 +119,6 @@
     <ClInclude Include="Source\Camera.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Floor.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Dragon.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
@@ -135,6 +132,12 @@
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="BaseObject.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\LimitCollider.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\InfoScreen.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>

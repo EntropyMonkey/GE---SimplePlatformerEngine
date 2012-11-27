@@ -29,7 +29,8 @@ namespace SPE
 		void					Receive(CollisionMessage *message);
 
 		void					OnCollision(PhysicsObject *o1, PhysicsObject *o2);
-		bool					IsVisible();
+
+		void					ChangeSpriteFrame();
 
 	protected:
 		Game *					game;
@@ -40,6 +41,7 @@ namespace SPE
 		const unsigned int		spriteSize;
 		int						currentSprite;
 		bool					enteredScreen;
+		float					liveTime;
 	};
 };
 

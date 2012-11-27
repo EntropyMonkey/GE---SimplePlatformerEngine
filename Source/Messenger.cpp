@@ -17,6 +17,11 @@ void Messenger::Register(IMessageReceiver *receiver)
 	receivers->push_back(receiver);
 }
 
+void Messenger::UnRegister(IMessageReceiver *receiver)
+{
+	receivers->remove(receiver);
+}
+
 void Messenger::SendMessage(Message &message)
 {
 	for (std::list<IMessageReceiver*>::iterator it = receivers->begin();

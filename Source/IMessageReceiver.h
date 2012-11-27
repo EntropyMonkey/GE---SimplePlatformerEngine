@@ -15,7 +15,7 @@ namespace SPE
 	public:
 		IMessageReceiver(Messenger *messenger, bool registerInstantly = true);
 
-		virtual ~IMessageReceiver() {}
+		virtual ~IMessageReceiver();
 
 		virtual void Receive(Message *message) = 0;
 

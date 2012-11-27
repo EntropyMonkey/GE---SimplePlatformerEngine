@@ -26,12 +26,12 @@
 #include "Log.h"
 
 #include "Player.h"
-#include "Floor.h"
+#include "LimitCollider.h"
 #include "Dragon.h"
 #include "Bomb.h"
 #include "Background.h"
+#include "InfoScreen.h"
 
-#include "IMessageReceiver.h"
 #include "Messenger.h"
 #include "Message.h"
 #include "InputMessage.h"
@@ -41,12 +41,12 @@
 namespace SPE
 {
 	class Player;
-	class Floor;
+	class LimitCollider;
 	class Dragon;
 	class Background;
 	class Bomb;
 
-	public class Game : public IMessageReceiver
+	public class Game
 	{
 	public:
 		bool					aiming; // if player is loading the dragon
@@ -69,23 +69,25 @@ namespace SPE
 
 		void					UpdateGameObjects(float deltaTime);
 
-		void					Receive(Message *message);
-		void					Receive(InputMessage *message);
-
 		void					Shoot(float direction);
 		void					SpawnBomb();
 
 		void					Reset();
+		void					GameOver();
 		void					Quit();
 
 	private:
 		bool					quit;
+
+		bool					startingGame;
+		bool					gameOver;
 
 		float					timeScale;
 		float					deltaTime;
 		float					lastUpdateTime;
 
 		std::list<GameObject *> gameObjects;
+		std::list<GameObject *> gameObjectsToDelete;
 
 		Log*					log;
 
@@ -97,13 +99,17 @@ namespace SPE
 		Player*					playerBomb;
 		std::vector<Bomb*>*		spawnedBombs;
 		float					shootSpeed;
-		Floor*					floor;
+		LimitCollider*			floor;
+		LimitCollider*			ceiling;
 		Background*				background;
 
 		glm::vec2				spawnArea;
 		float					spawnHeadStart;
-		const float				spawnTime;
+		float					spawnTime;
 		float					spawnTimer;
+
+		InfoScreen*				startScreen;
+		InfoScreen*				gameOverScreen;
 
 		void					Play();
 	};

@@ -21,7 +21,7 @@ Player::Player(Game* _game, Messenger *_messenger) :
 	vec2 size = vec2((float)spriteSize / pixSize, (float)spriteSize / pixSize);
 
 	int x = 0; int y = 0;
-	for (int i = 0; i < 7; i++)
+	for (int i = 0; i < spriteNum; i++)
 	{
 		spriteRects[i * 4 + X] = x * size.x;
 		spriteRects[i * 4 + Y] = y * size.y;
@@ -61,6 +61,8 @@ Player::Player(Game* _game, Messenger *_messenger) :
 	minSize = 32;
 	maxSize = 50;
 
+	points = 0;
+
 	// not doing this in the GameObject and PhysicsObject constructors
 	// because of circular reference trouble
 	game->Add((GameObject*)this);
@@ -84,7 +86,6 @@ void Player::Active(bool _update, bool _render)
 
 void Player::Update(float deltaTime)
 {
-	//printf("%f %f\n", position.x, position.y);
 	if (startFlying)
 	{
 		// give the bomb a push for some time in the beginning
@@ -111,22 +112,25 @@ void Player::Update(float deltaTime)
 		// make the bomb bigger and smaller
 		if (getBigger && mass < maxWeight)
 		{
-			AddForce(vec2(-1, 0) * getBiggerAntiBoost);
+			AddForce(vec2(-1, -1) * getBiggerAntiBoost);
 			velocity -= velocity * getBiggerAntiBoost * deltaTime;
 
 			mass += weightChange * deltaTime;
-			printf("%f\n", radius);
 			radius += weightChange * deltaTime;
 		}
 		else if (getSmaller && mass - minWeight > 0.2f)
 		{
-			AddForce(vec2(1, 0) * getSmallerBoost);
+			AddForce(vec2(1, 1) * getSmallerBoost);
 			velocity += velocity * getSmallerBoost * deltaTime;
 
 			mass -= weightChange * deltaTime;
-			printf("%f\n", radius);
 			radius -= weightChange * deltaTime;
 		}
+	}
+
+	if (velocity.x < 0)
+	{
+		game->GameOver();
 	}
 }
 
@@ -143,7 +147,7 @@ void Player::Render()
 
 		glTranslatef(position.x, position.y, 0);
 
-		int i = 3 * 4;
+		int i = currentSprite * 4;
 		
 		glBegin(GL_QUADS);
 			// bottom left
@@ -225,12 +229,10 @@ void Player::Receive(InputMessage *message)
 			if (message->key == SDLKey::SDLK_UP)
 			{
 				getBigger = true;
-				printf("getBigger\n");
 			}
 			else if (message->key == SDLKey::SDLK_DOWN)
 			{
 				getSmaller = true;
-				printf("getSmaller\n");
 			}
 		}
 		else if (message->action == InputMessage::KEY_UP)
@@ -249,6 +251,21 @@ void Player::Receive(InputMessage *message)
 
 void Player::Receive(CollisionMessage *message)
 {
-	/*std::cout << "collision: " << message->colliderOne->id << " " << 
-		message->colliderTwo->id << std::endl;*/
+	if (message->colliderOne == this || message->colliderTwo == this)
+	{
+		Bomb *bomb = dynamic_cast<Bomb *>(message->colliderOne);
+		if (!bomb)
+		{
+			bomb = dynamic_cast<Bomb *>(message->colliderTwo);
+		}
+
+		if (bomb && bomb->mass <= this->mass)
+		{
+			points += 128;
+			bomb->ChangeSpriteFrame();
+		}
+
+		// if colliding with something, randomly change sprite image
+		currentSprite = rand() % spriteNum;
+	}
 }

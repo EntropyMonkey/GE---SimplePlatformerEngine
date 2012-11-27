@@ -19,6 +19,7 @@ namespace SPE
 		~Messenger();
 
 		void							Register(IMessageReceiver *receiver);
+		void							UnRegister(IMessageReceiver *receiver);
 		
 		void							SendMessage(Message &message);
 

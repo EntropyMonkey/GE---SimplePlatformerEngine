@@ -66,6 +66,8 @@ namespace SPE
 		float					minWeight;
 		float					minSize;
 		float					maxSize;
+
+		unsigned int			points;
 	};
 };
 

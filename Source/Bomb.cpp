@@ -23,7 +23,7 @@ Bomb::Bomb(Game *game, Messenger *messenger, char* texturePath) :
 	vec2 size = vec2((float)spriteSize / pixSize, (float)spriteSize / pixSize);
 
 	int x = 0; int y = 0;
-	for (int i = 0; i < 7; i++)
+	for (int i = 0; i < spriteNum; i++)
 	{
 		spriteRects[i * 4 + X] = x * size.x;
 		spriteRects[i * 4 + Y] = y * size.y;
@@ -43,10 +43,9 @@ Bomb::Bomb(Game *game, Messenger *messenger, char* texturePath) :
 	// physics stuff
 	mass = 10;
 	radius = 20;
-	useGravity = false;
+	useGravity = true;
 
-	Active(false, false);
-	physicsActive = false;
+	liveTime = 20;
 
 	enteredScreen = false;
 }
@@ -60,36 +59,9 @@ Bomb::~Bomb()
 
 void Bomb::Update(float deltaTime)
 {
-	//printf("%i %f %f\n", id, position.x, position.y);
-	// check if still in screen after entering it
-	if (IsVisible() && !enteredScreen)
-	{
-		enteredScreen = true;
-		Active(true, true);
-		physicsActive = true;
-	}
-	else if (enteredScreen)
-	{
-		delete this;
-	}
-
-	if (id % 10 == 0)
-		printf("%s", IsVisible());
-}
-
-bool Bomb::IsVisible()
-{
-	if ((position.x < game->cameraPos.x - SCREEN_WIDTH * 0.5f ||
-		position.x > game->cameraPos.x + SCREEN_WIDTH * 0.5f) &&
-		(position.y < game->cameraPos.y - SCREEN_HEIGHT * 0.5f ||
-		position.y > game->cameraPos.y + SCREEN_HEIGHT * 0.5f))
-	{
-		return false;
-	}
-	else
-	{
-		return true;
-	}
+	liveTime -= deltaTime;
+	if (liveTime < 0.0f)
+		this->~Bomb();
 }
 
 void Bomb::Render()
@@ -163,4 +135,9 @@ void Bomb::Receive(CollisionMessage *message)
 void Bomb::OnCollision(PhysicsObject *o1, PhysicsObject *o2)
 {
 	messenger->SendMessage(CollisionMessage(o1, o2));
+}
+
+void Bomb::ChangeSpriteFrame()
+{
+	currentSprite = rand() % spriteNum;
 }

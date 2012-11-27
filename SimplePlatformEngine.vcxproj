@@ -15,7 +15,7 @@
     <ClCompile Include="Source\Bomb.cpp" />
     <ClCompile Include="Source\CirclePO.cpp" />
     <ClCompile Include="Source\Dragon.cpp" />
-    <ClCompile Include="Source\Floor.cpp" />
+    <ClCompile Include="Source\LimitCollider.cpp" />
     <ClCompile Include="Source\Game.cpp" />
     <ClCompile Include="Source\IMessageReceiver.cpp" />
     <ClCompile Include="Source\Log.cpp" />
@@ -35,7 +35,8 @@
     <ClInclude Include="Source\CirclePO.h" />
     <ClInclude Include="Source\CollisionMessage.h" />
     <ClInclude Include="Source\Dragon.h" />
-    <ClInclude Include="Source\Floor.h" />
+    <ClInclude Include="Source\InfoScreen.h" />
+    <ClInclude Include="Source\LimitCollider.h" />
     <ClInclude Include="Source\Game.h" />
     <ClInclude Include="Source\GameObject.h" />
     <ClInclude Include="Source\IMessageReceiver.h" />

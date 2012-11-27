@@ -57,7 +57,6 @@ bool CirclePO::TestCollision(PhysicsObject* other)
 			{
 				return false;
 			}
-			//printf("%f <= %f\n", position.y - radius, o.position.y + o.GetSize().y * 0.5f);
 		}
 		else
 		{

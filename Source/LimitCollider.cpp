@@ -1,9 +1,9 @@
-#include "Floor.h"
+#include "LimitCollider.h"
 
 using namespace SPE;
 using namespace glm;
 
-Floor::Floor(Game *_game, Messenger *_messenger) :
+LimitCollider::LimitCollider(Game *_game, Messenger *_messenger) :
 	game(_game),
 	IMessageReceiver(_messenger)
 {
@@ -12,7 +12,6 @@ Floor::Floor(Game *_game, Messenger *_messenger) :
 
 	SpriteHelper::LoadTexture("Images/sprites/floor.png", sprite);
 
-	position = vec2(0, 400);
 	SetSize(vec2(10000, 100));
 
 	useGravity = false;
@@ -23,7 +22,7 @@ Floor::Floor(Game *_game, Messenger *_messenger) :
 	coeffOfFriction = 500.0f; // it's a fake coefficient
 }
 
-Floor::~Floor()
+LimitCollider::~LimitCollider()
 {
 	game->Remove((GameObject*)this);
 	game->Remove((PhysicsObject*)this);
@@ -31,12 +30,12 @@ Floor::~Floor()
 	glDeleteTextures(1, &sprite);
 }
 
-void Floor::Update(float deltaTime)
+void LimitCollider::Update(float deltaTime)
 {
 	textureOffset += deltaTime * 0.005f * textureMovementSpeed;
 }
 
-void Floor::Render()
+void LimitCollider::Render()
 {
 	glBindTexture(GL_TEXTURE_2D, sprite);
 
@@ -67,7 +66,7 @@ void Floor::Render()
 	}
 }
 
-void Floor::Receive(Message *message)
+void LimitCollider::Receive(Message *message)
 {
 	{
 		CollisionMessage *msg = dynamic_cast<CollisionMessage*>(message);
@@ -78,11 +77,10 @@ void Floor::Receive(Message *message)
 	}
 }
 
-void Floor::Receive(CollisionMessage *message)
+void LimitCollider::Receive(CollisionMessage *message)
 {
 	if (message->colliderOne == (PhysicsObject *)this ||
 		message->colliderTwo == (PhysicsObject *)this)
 	{
-		//printf("collision with floor!");
 	}
 }

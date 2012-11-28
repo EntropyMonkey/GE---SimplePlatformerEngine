@@ -131,13 +131,13 @@
     <ClInclude Include="Source\Bomb.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="BaseObject.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="Source\LimitCollider.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="Source\InfoScreen.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\BaseObject.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>

@@ -160,8 +160,6 @@ void Game::Update(float deltaTime)
 		SpawnBomb();
 		spawnTime *= 0.9f;
 	}
-
-	UpdateGameObjects(deltaTime);
 }
 
 void Game::UpdateGameObjects(float deltaTime)

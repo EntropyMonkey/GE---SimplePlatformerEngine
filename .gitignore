@@ -26,6 +26,7 @@
 *.metagen
 *.intermediate.manifest
 *.cache
+/Debug
 
 /ipch
 /obj

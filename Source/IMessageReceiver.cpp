@@ -13,5 +13,5 @@ IMessageReceiver::IMessageReceiver(Messenger *messenger, bool registerInstantly)
 IMessageReceiver::~IMessageReceiver()
 {
 	if (messenger)
-	messenger->UnRegister(this);
+		messenger->UnRegister(this);
 }

@@ -7,9 +7,11 @@
 #pragma comment(lib, "SDL_image.lib")
 #endif
 
+#if DEBUG
 #ifdef __cplusplus
 extern "C"
 #define main	SDL_main
+#endif
 #endif
 
 int main (int argc, char* argv[])

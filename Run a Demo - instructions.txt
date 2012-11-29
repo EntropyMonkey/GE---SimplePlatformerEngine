@@ -1,0 +1,18 @@
+Running a demo:
+
+1) Go to the Release folder. Run the .exe file.
+
+OR
+
+2) Setup the project by 
+
+A) installing SDL, SDL_image, openGL, and glm.
+
+* SDL 1.2.15 needs to be downloaded at http://www.libsdl.org/download-1.2.php. 
+* Set an environment variable called "SDK_SDL".
+* SDL_image is included in the source code.
+* The used openGL files can be found in the zip folder in the Source folder, along with
+  installation instructions
+* Same as openGL for glm
+
+B) compiling the project in either Release or Debug mode.

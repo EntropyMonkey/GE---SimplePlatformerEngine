@@ -1,19 +1,12 @@
 GE---SimplePlatformerEngine
 ===========================
 
-A simple platformer engine.
+A simple 2D physics implementation, and a demo game.
 
-Features:
-*
-
-Frameworks:
-* OpenFrameworks v 007
-
-Tested Environment
-Windows 7 & Visual Studio 2010
-
-How to install:
-
-1 ) download OpenFrameworks
-2 ) clone the git repository into the openFrameworks/apps/examples folder
-3 ) Build
+The project was written in C++, using additional libraries:
+* Included in the repository
+	- SDL image
+* External
+	- openGL. Installed manually. Files in zip
+	- glm. Installed manually. Files in zip
+	- SDL 1.2.15. http://www.libsdl.org/download-1.2.php Used environment variable named "SDK_SDL"

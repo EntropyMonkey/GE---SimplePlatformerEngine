@@ -6,6 +6,7 @@
 \usepackage{xcolor}
 \usepackage{listings}
 \usepackage{courier}
+\usepackage{amsmath}
 
 % syntax highlighting from: http://www.kv0.org/blog/2010/12/15/vernunftiges-syntax-highlighting-in-latex/
 \lstset{
@@ -133,6 +134,7 @@ The assignment was to create a simple physics engine which can be used for a pla
 \end{figure}
 
 % -----------------------------------------
+\newpage
 \section{Overview}
 \label{section:overview}
 
@@ -157,6 +159,8 @@ First the game is being set up, then the game loop starts. The game loop is quit
 
 The Input is realized by using SDL events. The first thing done in the Play method is to fetch all pending input events. These events are then sorted by what is important, what is to be used in the game, and what not. Then the newly written message system starts to create and forward messages.
 
+The messenger can send messages of different types to receivers of type IMessageReceiver. All objects of this type automatically register and unregister at the messenger at creation and deletion. The receivers decide which kinds of messages they want to process, but each receiver gets all sent messages.
+
 \begin{lstlisting}[caption=Messaging, language=C++]
 SDL_Event sdlEvent = SDL_Event();
 while (SDL_PollEvent(&sdlEvent))
@@ -177,8 +181,6 @@ while (SDL_PollEvent(&sdlEvent))
 	}
 }
 \end{lstlisting}
-
-The messenger can send messages of different types to receivers of type IMessageReceiver. All objects of this type automatically register and unregister at the messenger at creation and deletion. The receivers decide which kinds of messages they want to process, but each receiver gets all sent messages.
 
 \subsection{Physics}
 
@@ -210,14 +212,100 @@ In the first phase of the game the player can choose the launch angle by rotatin
 \section{Important Classes}
 \label{section:classes}
 
-In figure \ref{figure:classes} a selection of classes is depicted.
+In figure \ref{figure:classes} a selection of classes is depicted. The most interesting parts are described in this chapter.
 
-\paragraph{Game.}
-The game class manages the game states and 
+\subsection{Game}
+\label{subsection:Game}
+The game class manages the game states and the game objects. It renders the objects and updates them automatically. The game class is intended to serve as a base class for other games, although it was used as both the abstract class and the implementation in this project.
+
+\paragraph{Initialization.} First of all, SDL is set up. After that, openGL is prepared for 2D drawing. The projection mode used is orthogonal.
+After the graphics setup, the frame for the game logic is initialized. This includes the messenger (\ref{subsection:Messenger}), the log, and the physics (\ref{subsection:Physics}).
+Subsequently the game objects are set up. \texttt{GameObjects} need a reference to the game and the messenger, which they use for automatically registering. \texttt{GameObject}s in this game are the playerBomb, floor, ceiling, dragon, and the background. The enemy bombs are spawned at run-time.
+
+\paragraph{Play.} First, all relevant events from SDL are converted to \texttt{Message}s and broadcast by the messenger. Then \texttt{deltaTime} is calculated. The game, physics and gameObjects are updated after. The render method is called afterwards. When the game objects are updated, the game loops through the list containing them. If a game object has to be deleted it cannot be done in this loop, so the object is moved to a deletion list. Deleting gameObjects is the last thing to do in the \texttt{Play} method.
+
+\begin{lstlisting}[caption=The play method.,language=C++]
+void Game::Play()
+{
+	// events
+	SDL_Event sdlEvent = SDL_Event();
+	while (SDL_PollEvent(&sdlEvent))
+	{
+		// user closes window
+		if (sdlEvent.type == SDL_QUIT)
+		{
+			quit = true;
+			break;
+		}
+		else if (sdlEvent.type == SDL_KEYDOWN)
+		{
+			messenger->SendMessage(InputMessage(InputMessage::KEY_DOWN, sdlEvent.key.keysym.sym));
+		}
+		else if (sdlEvent.type == SDL_KEYUP)
+		{
+			messenger->SendMessage(InputMessage(InputMessage::KEY_UP, sdlEvent.key.keysym.sym));
+		}
+	}
+
+	int now = clock();
+	deltaTime = (float)((now - lastUpdateTime) / CLOCKS_PER_SEC) / timeScale;
+	lastUpdateTime = now;
+
+	// update
+	Update(deltaTime);
+	// physics update
+	physics->Update(deltaTime);
+	// call update for each game object
+	UpdateGameObjects(deltaTime);
+
+	// render the game
+	Render();
+
+	// remove game objects which have been marked for deletion
+	for (list<GameObject*>::iterator it = gameObjectsToDelete.begin();
+		it != gameObjectsToDelete.end();
+		it++)
+	{
+		gameObjects.remove(*it);
+	}
+
+	gameObjectsToDelete.clear();
+}
+\end{lstlisting}
+
+\paragraph{Render.} The render method uses standard double-buffered openGL rendering. First the buffers are cleared, matrices are pushed and popped and vertices are sent to the hardware. In the end the buffers are swapped. The render method is virtual, because the render order of objects determines their visibility. Each game implementation has different orders and objects.
+
+\paragraph{Destructor.} In the destructor, all managed objects are deleted. First the \texttt{GameObjects} and then the messenger and physics. Last \texttt{SDL\_Quit()} is called.
+
+\paragraph{Object registration and unregistration.} There are two \texttt{Add} and \texttt{Remove} methods in the game. One pair is used to relay registration to the physics class. The other pair is used to register \texttt{GameObjects} for updating.
+
+\subsection{Messenger}
+\label{subsection:Messenger}
+
+The messaging system has three main components: the \texttt{Messenger}, the \texttt{IMessageReceiver}, and the \texttt{Message}. The messenger is used for broadcasting messages and for registering/unregistering receivers. All receivers get all messages. They decide for themselves whether they want to receive certain types of messages. The \texttt{IMessageReceiver} registers in the constructor and unregisters in the destructor. When sending a message, the messenger tells the message to deliver itself to all receivers. This is done because then the receiver can check the message's type.
+
+\subsection{Physics}
+\label{subsection:Physics}
+
+The physics class holds a list of physicsObjects, updates them and relays detected collisions via the messenger.
+
+\paragraph{Update.} The update method contains a nested loop for collision checking. However, it does not check collisions twice, which would happen if it would just go through all the objects in the inner and the outer loop. The determination of which objects should be checked works like this:\newline
+
+All collisions can be represented as a matrix of $n*n$ elements. The matrix can be mirrored at its diagonal, meaning that all collisions below the diagonal are too much and don't need to be calculated. An $x$ marks the test for a collision between the two objects.
+
+\begin{displaymath}
+\begin{matrix}
+	&	o1	&	o2	& o3 	& o4 	& \dots \\
+o1	&		&	x	&	x	&	x	& \dots \\
+o2 &		&		&	x	&	x	& \dots \\
+o3	&		&		&		& 	x	& \dots \\
+\vdots & \vdots & \vdots & \vdots & \vdots
+\end{matrix}
+\end{displaymath}
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[totalheight=0.5\textheight, angle=90]{classes.png}
+	\includegraphics[totalheight=0.45\textheight, angle=90]{classes.png}
 	\caption{A sketch of the most important classes.}
 	\label{figure:classes}
 \end{figure}
@@ -225,6 +313,10 @@ The game class manages the game states and
 %-----------------------------------------
 \section{Workflow}
 \label{section:workflow}
+
+I started working on the project quite early, because I wanted to try new things. So I tried and tried and jumped from one interesting thing to the next. I tried many graphics frameworks (openFrameworks, SDL, openGL, freeImage) I wanted to further my openGL skills, so I set up openGL (as well as the other frameworks). I decided to use openGL. So I created the drawing context and used the openGL display/event callbacks. (Which was a mistake, since the assignment was to create the loop and event system ourselves, but I only realized that later.) I got that running, so I created the physics logic (which I mostly reused in the final project). After that, however, things became chaotic. There were many loose ends which would have to be tied to the rest of the project. I would not have enough time to do that AND finish the other projects. Two weeks ago I decided to let it rest in peace. (It rests on GitHub: \url{https://github.com/JungleJinn/GE---Physics-Engine})
+
+I took the good stuff and used it for a new, clean, and simple project, which is the one described in this report. I had a better vision of what I wanted to do from the beginning. It worked better. Even if it is only a small and simple thing, I hope the work it took to get to this point is visible.
 
 \newpage
 \lstlistoflistings

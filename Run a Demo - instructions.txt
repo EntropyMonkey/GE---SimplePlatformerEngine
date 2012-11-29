@@ -16,3 +16,10 @@ A) installing SDL, SDL_image, openGL, and glm.
 * Same as openGL for glm
 
 B) compiling the project in either Release or Debug mode.
+
+3) When running the demo, don't press any buttons until you see a dragon.
+Otherwise it will crash.
+When you see a dragon use the up/down arrow and space buttons. After the launch, press
+the up/down arrow keys to get bigger and smaller. The game is over when you become too 
+slow. You can become faster by becoming smaller. However when you are small, the other
+bombs push you backwards easier and you lose.

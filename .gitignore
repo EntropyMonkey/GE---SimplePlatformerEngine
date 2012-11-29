@@ -38,4 +38,6 @@ Images/sprites/XL
 *.aux
 *.dvi
 *.lof
+*.lol
+*.out
 *.toc
